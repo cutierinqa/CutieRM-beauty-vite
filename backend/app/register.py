@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+from app.security import pwd_context
 from app.models import User
 from app.database import SessionLocal
 from app.schemas import RegisterSchema

@@ -5,6 +5,8 @@ from app.database import get_db
 from app.models import User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi, Role
 from app.auth_utils import get_current_user
 from datetime import datetime
+from app.security import pwd_context
+from passlib.context import CryptContext
 
 admin_router = APIRouter(prefix="/admin", tags=["Admin"])
 history_router = APIRouter(prefix="/history",tags=["History"])
@@ -56,26 +58,21 @@ def get_users(
     return result
 
 @admin_router.post("/users")
-def create_user(
-    data: dict,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    if current_user.id_role != 3:
-        raise HTTPException(status_code=403)
+def create_user(data: dict, db: Session = Depends(get_db)):
+    hashed = pwd_context.hash(data.get("password"))
 
-    new_user = User(
+    user = User(
+        id_role=data.get("id_role"),
         fio=data.get("fio"),
         email=data.get("email"),
         telefon=data.get("telefon"),
-        id_role=int(data.get("id_role") or 1),
-        aktivnost=True,
-        password_hash=bcrypt.hash(data.get("password"))
+        password_hash=hashed,
+        aktivnost=1,
+        data_sozdaniya=datetime.now()
     )
 
-    db.add(new_user)
+    db.add(user)
     db.commit()
-
     return {"message": "user created"}
 
 @admin_router.put("/users/{id_user}")

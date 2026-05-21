@@ -277,18 +277,12 @@ export default function AdminRecords() {
     sx={{
       width: "100%",
       maxWidth: 1300,
-
       p: 4,
-
       borderRadius: "28px",
-
       background: "rgba(255,255,255,0.75)",
       backdropFilter: "blur(18px)",
-
       border: "1px solid rgba(255,79,163,0.15)",
-
       boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
-
       color: "#2b1d26",
     }}
   >
@@ -338,14 +332,10 @@ export default function AdminRecords() {
           <Table
             sx={{
                 minWidth: 1100,
-
                 background: "rgba(255,255,255,0.6)",
                 backdropFilter: "blur(14px)",
-
                 borderRadius: "20px",
-
                 overflow: "hidden",
-
                 border: "1px solid rgba(255,79,163,0.12)",
               }}
           >
