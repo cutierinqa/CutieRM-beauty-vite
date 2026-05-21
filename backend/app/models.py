@@ -11,16 +11,23 @@ class Role(Base):
 
 class User(Base):
     __tablename__ = "users"
+
     id_user = Column(Integer, primary_key=True, index=True)
     id_role = Column(Integer, ForeignKey("roles.id_role"), nullable=False)
+
     telefon = Column(String, unique=True, nullable=False, index=True)
     fio = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
+
     aktivnost = Column(DateTime, default=datetime.utcnow)
     data_sozdaniya = Column(DateTime, default=datetime.utcnow)
 
     role = relationship("Role", backref="users")
+
+    # 👇 ОБРАТНАЯ СВЯЗЬ
+    master = relationship("Master", back_populates="user")
+    
 
 class KategoriiKlientov(Base):
     __tablename__ = "kategorii_klientov"
@@ -45,19 +52,27 @@ class Klient(Base):
     zapisi = relationship("Zapisi", back_populates="klient")
     kategoria = relationship("KategoriiKlientov", back_populates="klienty")
     programma_loyalnosti = relationship("ProgrammaLoyalnosti", back_populates="klient", uselist=False)
+    
 
 class Master(Base):
     __tablename__ = "mastera"
+
     id_mastera = Column(Integer, primary_key=True, index=True)
     fio = Column(String(255), nullable=False)
-    dolzhnost = Column(String(100), nullable=True)
-    kvalifikaciya = Column(String(255), nullable=True)
-    data_nachala_stazha = Column(Date, nullable=True)
-    telefon = Column(String(20), nullable=True)
-    email = Column(String(100), nullable=True)
-    foto = Column(String(255), nullable=True)
+    dolzhnost = Column(String(100))
+    kvalifikaciya = Column(String(255))
+    data_nachala_stazha = Column(Date)
+
+    telefon = Column(String(20))
+    email = Column(String(100))
+    foto = Column(String(255))
+
+    id_user = Column(Integer, ForeignKey("users.id_user"))
 
     zapisi = relationship("Zapisi", back_populates="master")
+
+    # 👇 ВАЖНО: НЕ backref
+    user = relationship("User", back_populates="master")
 
 class KategoriiUslug(Base):
     __tablename__ = "kategorii_uslug"
@@ -145,4 +160,22 @@ class ProgrammaLoyalnosti(Base):
     status = Column(String(50), default="Активная")  
 
     klient = relationship("Klient", back_populates="programma_loyalnosti")
+    
+    class Shift(Base):
+        __tablename__ = "shifts"
 
+    id_shift = Column(Integer, primary_key=True, index=True)
+
+    id_mastera = Column(
+        Integer,
+        ForeignKey("mastera.id_mastera")
+    )
+    data_smeny = Column(Date)
+    vremya_nachala = Column(Time)
+    vremya_okonchaniya = Column(Time)
+    tip_smeny = Column(String(50))
+    kommentarii = Column(String(255))
+    master = relationship(
+        "Master",
+        backref="shifts"
+    )

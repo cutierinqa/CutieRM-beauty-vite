@@ -7,8 +7,9 @@ from datetime import datetime
 from app.database import SessionLocal
 from app.models import User, Master, Zapisi
 from app.config import SECRET_KEY, ALGORITHM
+from datetime import date
 
-master_router = APIRouter(tags=["Master"])
+master_router = APIRouter()
 
 security = HTTPBearer()
 
@@ -55,7 +56,28 @@ def get_current_user(
 
     return user
 
+def calculate_stazh(start_date: date):
+    if not start_date:
+        return "Не указан"
 
+    today = date.today()
+
+    years = today.year - start_date.year
+    months = today.month - start_date.month
+
+    if months < 0:
+        years -= 1
+        months += 12
+
+    if years >= 1:
+        if years == 1:
+            return "1 год"
+        elif 2 <= years <= 4:
+            return f"{years} года"
+        else:
+            return f"{years} лет"
+    else:
+        return f"{months} мес."
 # =========================
 # MASTER PROFILE
 # =========================
@@ -64,21 +86,22 @@ def get_master_me(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-
-    # только мастер
+    # проверка роли
     if current_user.id_role != 2:
-        raise HTTPException(status_code=403)
+        raise HTTPException(status_code=403, detail="Not a master")
 
+    # ищем мастера через user_id (как ты уже правильно сделала)
     master = db.query(Master).filter(
-        Master.telefon == current_user.telefon
+        Master.id_user == current_user.id_user
     ).first()
 
     if not master:
-        raise HTTPException(
-            status_code=404,
-            detail="Мастер не найден"
-        )
+        raise HTTPException(status_code=404, detail="Master not found")
+    
+    foto_url = None
 
+    if master.foto:
+        foto_url = f"http://127.0.0.1:8000/uploads/{master.foto}"
     return {
         "id_mastera": master.id_mastera,
         "fio": master.fio,
@@ -86,10 +109,9 @@ def get_master_me(
         "kvalifikaciya": master.kvalifikaciya,
         "telefon": master.telefon,
         "email": master.email,
-        "foto": master.foto,
-        "data_nachala_stazha": str(master.data_nachala_stazha)
+        "foto": foto_url,
+        "stazh": calculate_stazh(master.data_nachala_stazha)
     }
-
 
 # =========================
 # FUTURE ZAPISI
@@ -104,8 +126,8 @@ def get_future_zapisi(
         raise HTTPException(status_code=403)
 
     master = db.query(Master).filter(
-        Master.telefon == current_user.telefon
-    ).first()
+    Master.id_user == current_user.id_user
+).first()
 
     if not master:
         raise HTTPException(status_code=404)
@@ -142,8 +164,8 @@ def get_history(
         raise HTTPException(status_code=403)
 
     master = db.query(Master).filter(
-        Master.telefon == current_user.telefon
-    ).first()
+    Master.id_user == current_user.id_user
+).first()
 
     if not master:
         raise HTTPException(status_code=404)
@@ -180,8 +202,8 @@ def get_raspisanie(
         raise HTTPException(status_code=403)
 
     master = db.query(Master).filter(
-        Master.telefon == current_user.telefon
-    ).first()
+    Master.id_user == current_user.id_user
+).first()
 
     if not master:
         raise HTTPException(status_code=404)
@@ -202,5 +224,3 @@ def get_raspisanie(
         })
 
     return result
-
-print("ROUTES LOADED:", master_router.routes)

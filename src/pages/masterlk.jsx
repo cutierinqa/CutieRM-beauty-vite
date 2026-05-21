@@ -97,7 +97,7 @@ export default function LkMaster() {
       >
         {/* ФОТО */}
         <Avatar
-          src={master.photo}
+          src={master.foto}
           alt={master.fio}
           sx={{
             width: 140,
@@ -132,7 +132,18 @@ export default function LkMaster() {
             fontSize: "18px"
           }}
         >
-          {master.specializaciya}
+          
+           {master.dolzhnost}
+        </Typography>
+        <Typography
+          sx={{
+            mt: 1,
+            color: "#666",
+            fontSize: "18px"
+          }}
+        >
+          
+           {master.kvalifikaciya}
         </Typography>
 
         <Divider sx={{ my: 4 }} />
@@ -148,7 +159,7 @@ export default function LkMaster() {
           </Typography>
 
           <Typography>
-            <b>Стаж:</b> {master.stazh} лет
+            <b>Стаж:</b> {master.stazh} 
           </Typography>
         </Stack>
 
@@ -175,7 +186,9 @@ export default function LkMaster() {
                 "0 10px 25px rgba(255,79,163,0.25)",
 
               "&:hover": {
-                transform: "translateY(-2px)"
+                borderColor: "#e63e90",
+                color: "#ff4fa3",
+                background: "#fff0f7"
               }
             }}
           >
@@ -201,7 +214,9 @@ export default function LkMaster() {
                 "0 10px 25px rgba(255,79,163,0.25)",
 
               "&:hover": {
-                transform: "translateY(-2px)"
+                borderColor: "#e63e90",
+                color: "#ff4fa3",
+                background: "#fff0f7"
               }
             }}
           >
@@ -227,7 +242,9 @@ export default function LkMaster() {
                 "0 10px 25px rgba(255,79,163,0.25)",
 
               "&:hover": {
-                transform: "translateY(-2px)"
+                borderColor: "#e63e90",
+                color: "#ff4fa3",
+                background: "#fff0f7"
               }
             }}
           >
@@ -250,10 +267,11 @@ export default function LkMaster() {
 
               borderColor: "#ff4fa3",
 
-              color: "#ff4fa3",
+              color: "white",
 
               "&:hover": {
                 borderColor: "#e63e90",
+                color: "#ff4fa3",
                 background: "#fff0f7"
               }
             }}

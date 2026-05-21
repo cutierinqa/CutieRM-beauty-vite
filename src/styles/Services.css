@@ -18,33 +18,61 @@
 
   letter-spacing: -2px;
 
-  color: #2b1d26;
+  color: #ff4fa3;
 }
 
-/* ===== CATEGORIES GRID ===== */
+/* ===== CATEGORIES GRID (5 В РЯД) ===== */
 
 .categories-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(auto-fit, minmax(220px, 1fr));
+  /* 5 колонок фиксировано */
+  grid-template-columns: repeat(5, 1fr);
 
-  gap: 24px;
+  gap: 20px;
 
-  max-width: 1100px;
+  max-width: 1200px;
 
   margin: 0 auto 40px;
+}
+
+
+.category-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  position: relative;
+  z-index: 2; /* чтобы текст был над фоном */
+}
+
+.category-icon {
+  width: 60px;
+  height: 60px;
+
+  object-fit: contain; /* ключевое — НЕ растягивает PNG */
+
+  display: block;
+
+  opacity: 0.9;
 }
 
 /* ===== CATEGORY CARD ===== */
 
 .category-card {
   position: relative;
-
+  height: 150px; /* фиксируем высоту */
   overflow: hidden;
-
+  background-size: contain; /* 👈 не растягивает */
+  background-repeat: no-repeat;
+  background-position: center; /* 👈 центр */
   padding: 38px 30px;
-
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   border-radius: 28px;
 
   background:
@@ -53,7 +81,7 @@
   border:
     1px solid rgba(255, 255, 255, 0.45);
 
-  color: #2b1d26;
+  color: #ff4fa3;
 
   font-size: 20px;
   font-weight: 700;
@@ -112,20 +140,28 @@
 
 /* ===== ACTIVE CARD ===== */
 
-.category-card.active {
-  background:
-    linear-gradient(
-      135deg,
-      #ff4fa3,
-      #ff8ec6
-    );
-
-  color: white;
-
-  box-shadow:
-    0 18px 40px rgba(255, 79, 163, 0.35);
+.category-card.active .category-content span {
+  color: #ff4fa3;
 }
 
+.category-card.active .category-icon {
+  
+  color: #ff4fa3;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 1100px) {
+  .categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 /* ===== SERVICES LIST ===== */
 
 .services-list {

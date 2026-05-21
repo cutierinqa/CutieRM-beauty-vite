@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Services.css";
+import defaultIcon from "../assets/hero.ico";
+import manicure from "../assets/manicure.png";
+import pedicure from "../assets/pedicure.png";
+import designe from "../assets/designe.png";
+import heal from "../assets/heal.png";
+import del from "../assets/del.png";
 
+const categoryIcons = {
+  "Маникюр": manicure,
+  "Педикюр": pedicure,
+  "Дизайн ногтей": designe,
+  "Ремонт и укрепление": heal,
+  "Снятие покрытия": del,
+};
 const Services = () => {
   const [services, setServices] = useState([]);
   const [openCategory, setOpenCategory] = useState(null);
@@ -30,12 +43,19 @@ const Services = () => {
       <div className="categories-grid">
         {Object.keys(groupedServices).map((category) => (
           <div
-            key={category}
-            className={`category-card ${openCategory === category ? "active" : ""}`}
-            onClick={() => toggleCategory(category)}
-          >
-            {category}
-          </div>
+  key={category}
+  className={`category-card ${openCategory === category ? "active" : ""}`}
+  onClick={() => toggleCategory(category)}
+>
+  <div className="category-content">
+    <img
+      src={categoryIcons[category] || defaultIcon}
+      className="category-icon"
+      alt={category}
+    />
+    <span>{category}</span>
+  </div>
+</div>
         ))}
       </div>
 

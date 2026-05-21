@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
@@ -8,10 +9,12 @@ from app.client import router as client_router
 from app.history import router as history_router
 from app.loyalty import router as loyalty_router
 from app.admin import admin_router, history_router
+from app.schedule import schedule_router
+from app.master import master_router
 from app.models import User, Klient, Master, Zapisi, Usluga
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from app.master import master_router
+
 from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
@@ -31,15 +34,14 @@ app.include_router(loyalty_router)
 app.include_router(admin_router)
 app.include_router(history_router)
 app.include_router(master_router, prefix="/master")
+app.include_router(
+    schedule_router,
+    prefix="/schedule",
+    tags=["Schedule"]
+)
+print("MASTER ROUTES IN APP:", app.routes)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-app.mount(
-    "/uploads",
-    StaticFiles(directory=str(BASE_DIR / "uploads")),
-    name="uploads"
-)
-
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")
@@ -120,4 +122,5 @@ def get_masters():
     conn.close()
     return masters
 
-print("MASTER ROUTER LOADED")
+print("MASTER ROUTER OBJECT:", master_router)
+print("MASTER ROUTES:", getattr(master_router, "routes", None))

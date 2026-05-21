@@ -29,8 +29,8 @@ function App() {
   return (
     <>
       <Helmet>
-        <title>NOVA</title>
-        <link rel="icon" href="/logo.svg" />
+        <title >NOVA</title>
+        
       </Helmet>
 
       <Navbar />

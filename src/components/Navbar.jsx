@@ -17,7 +17,7 @@ const Navbar = () => {
 console.log("ROLE:", role);
   return (
     <nav className="navbar">
-      <div className="logo">NOVA</div>
+      <div onClick={() => navigate("/")} className="logo">NOVA</div>
 
       <ul className="nav-links">
         <li><Link to="/">Главная</Link></li>
