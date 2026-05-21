@@ -284,6 +284,7 @@ export default function AdminRecords() {
       border: "1px solid rgba(255,79,163,0.15)",
       boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
       color: "#2b1d26",
+      borderColor: "#ff4fa3",
     }}
   >
         {/* HEADER */}

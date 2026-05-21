@@ -141,6 +141,7 @@ export default function AdminMasters() {
       border: "1px solid rgba(255,79,163,0.15)",
 
       boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
+      borderColor: "#ff4fa3",
 
       color: "#2b1d26",
     }}

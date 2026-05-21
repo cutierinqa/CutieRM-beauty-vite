@@ -220,6 +220,7 @@ export default function AdminUsers() {
       border: "1px solid rgba(255,79,163,0.15)",
       boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
       color: "#2b1d26",
+      borderColor: "#ff4fa3",
       
       
     }}
@@ -268,132 +269,120 @@ export default function AdminUsers() {
 
         {/* TABLE */}
         <Box sx={{ overflowX: "auto" }}>
-        <Table sx={{ 
-                minWidth: 1100,
+  <Table
+    sx={{
+      minWidth: 1100,
+      width: "100%",
+      borderCollapse: "collapse",
+
+      "& .MuiTableCell-root": {
+        borderBottom: "1px solid rgba(0,0,0,0.12)",
+        textAlign: "center",
+        color: "#2b1d26",
+      },
+
+      "& .MuiTableHead-root .MuiTableCell-root": {
+        fontWeight: 700,
+        background: "rgba(255,79,163,0.08)",
+      },
+
+      "& .MuiTableRow-root:hover": {
+        background: "rgba(255,79,163,0.04)",
+      },
+    }}
+  >
+    <TableHead>
+      <TableRow>
+        {[
+          "ФИО",
+          "Телефон",
+          "Email",
+          "Роль",
+          "Активность",
+          "Действия"
+        ].map((t) => (
+          <TableCell key={t}>
+            {t}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+
+    <TableBody>
+      {users.map((u) => (
+        <TableRow key={u.id_user}>
+          <TableCell>{u.fio}</TableCell>
+
+          <TableCell>{u.telefon}</TableCell>
+
+          <TableCell>{u.email}</TableCell>
+
+          <TableCell>{u.role}</TableCell>
+
+          <TableCell>
+            {u.aktivnost ? "Да" : "Нет"}
+          </TableCell>
+
+          <TableCell align="center">
+            <Box
+              sx={{
                 width: "100%",
-                margin: "0 auto",
-                background: "rgba(255,255,255,0.6)",
-                backdropFilter: "blur(14px)",
-                borderRadius: "20px",
-                overflow: "hidden",
-                border: "1px solid rgba(255,79,163,0.12)",
-              }}>
-          <TableHead>
-            <TableRow>
-              {[
-                "ФИО",
-                "Телефон",
-                "Email",
-                "Роль",
-                "Активность",
-                "Действия"
-              ].map((t) => (
-                <TableCell
-                  key={t}
-                  align="center"
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Stack
+                direction="row"
+                spacing={1}
+              >
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={() => handleEdit(u)}
                   sx={{
-                      color: "black",
-                      fontWeight: 600,
-                      borderColor: "#444",
-                    }}
+                    background:
+                      "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+                    fontWeight: 600,
+                    textTransform: "none",
+                    borderRadius: "10px",
+
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                    },
+                  }}
                 >
-                  {t}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+                  Редактировать
+                </Button>
 
-          <TableBody>
-            {users.map((u) => (
-              <TableRow key={u.id_user}>
-                <TableCell align="center" sx={{
-                        color: "black",
-                      borderColor: "#444",
-                    }}>
-                  {u.fio}
-                </TableCell>
-                <TableCell align="center" sx={{
-                        color: "black",
-                      borderColor: "#444",
-                    }}>
-                  {u.telefon}
-                </TableCell>
-                <TableCell align="center" sx={{
-                        color: "black",
-                      borderColor: "#444",
-                    }}>
-                  {u.email}
-                </TableCell>
-                <TableCell align="center" sx={{
-                        color: "black",
-                      borderColor: "#444",
-                    }}>
-                  {u.role}
-                </TableCell>
-                <TableCell align="center" sx={{
-                        color: "black",
-                      borderColor: "#444",
-                    }}>
-                  {u.aktivnost ? "Да" : "Нет"}
-                </TableCell>
-                <TableCell
-                                    align="center"
-                                    sx={{
-                                      color: "black",
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      
-                                    }}
-                                  >
-                                    <Stack
-                                      direction="row"
-                                      spacing={1}
-                                      justifyContent="center"
-                                    >
-                                      <Button
-                                        size="small"
-                                        variant="contained"
-                                        onClick={() => handleEdit(u)}
-                                        sx={{
-                                          background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-                                          fontWeight: 600,
-                                          textTransform: "none",
-                                          borderRadius: "10px",
-                
-                                          "&:hover": {
-                                            transform: "translateY(-2px)",
-                                          },
-                                        }}
-                                      >
-                                        Редактировать
-                                      </Button>
-                
-                                      <Button
-                                        size="small"
-                                        variant="contained"
-                                        color="error"
-                                        onClick={() => deleteUser(u.id_user)}
-                                        sx={{
-                                          background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
-                                          fontWeight: 600,
-                                          textTransform: "none",
-                                          borderRadius: "10px",
-                
-                                          "&:hover": {
-                                            transform: "translateY(-2px)",
-                                          },
-                                        }}
-                                      >
-                                        Удалить
-                                      </Button>
-                                    </Stack>
-                                  </TableCell>
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={() => deleteUser(u.id_user)}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
 
-                
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> </Box>
+                    fontWeight: 600,
+                    textTransform: "none",
+                    borderRadius: "10px",
+
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  Удалить
+                </Button>
+              </Stack>
+            </Box>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</Box>
 
         {/* ADD */}
         <Dialog

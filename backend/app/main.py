@@ -11,7 +11,8 @@ from app.admin import admin_router, history_router
 from app.models import User, Klient, Master, Zapisi, Usluga
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-
+from app.master import master_router
+from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
 app.add_middleware( CORSMiddleware,
@@ -21,6 +22,7 @@ app.add_middleware( CORSMiddleware,
     allow_headers=["*"],
 )
 
+
 app.include_router(router)
 app.include_router(register_router)
 app.include_router(client_router)
@@ -28,7 +30,7 @@ app.include_router(history_router)
 app.include_router(loyalty_router)
 app.include_router(admin_router)
 app.include_router(history_router)
-
+app.include_router(master_router, prefix="/master")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,6 +39,8 @@ app.mount(
     StaticFiles(directory=str(BASE_DIR / "uploads")),
     name="uploads"
 )
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")
 
@@ -115,3 +119,5 @@ def get_masters():
 
     conn.close()
     return masters
+
+print("MASTER ROUTER LOADED")

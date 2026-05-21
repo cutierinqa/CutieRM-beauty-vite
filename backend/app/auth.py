@@ -9,10 +9,7 @@ from app.models import User, Role
 from app.schemas import LoginSchema
 
 router = APIRouter()
-pwd_context = CryptContext(
-    schemes=["argon2"],  
-    deprecated="auto"
-)
+
 def get_db():
     db = SessionLocal()
     try:

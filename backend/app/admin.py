@@ -58,7 +58,14 @@ def get_users(
     return result
 
 @admin_router.post("/users")
-def create_user(data: dict, db: Session = Depends(get_db)):
+def create_user(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
     hashed = pwd_context.hash(data.get("password"))
 
     user = User(
@@ -72,7 +79,23 @@ def create_user(data: dict, db: Session = Depends(get_db)):
     )
 
     db.add(user)
+    db.commit() 
+    db.refresh(user)
+
+    # если роль клиент
+    if int(data.get("id_role")) == 1:
+
+        klient = Klient(
+        id_user=user.id_user,
+        fio=user.fio,
+        telefon=user.telefon,
+        email=user.email,
+        kolichestvo_vizitov=0
+    )
+
+    db.add(klient)
     db.commit()
+    
     return {"message": "user created"}
 
 @admin_router.put("/users/{id_user}")
@@ -101,7 +124,7 @@ def update_user(
 
     # пароль менять только если передан
     if data.get("password"):
-        user.password_hash = bcrypt.hash(data.get("password"))
+        user.password_hash = pwd_context.hash(data.get("password"))
 
     db.commit()
     return {"message": "updated"}

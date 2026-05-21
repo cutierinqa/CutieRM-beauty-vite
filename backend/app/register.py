@@ -7,10 +7,6 @@ from app.schemas import RegisterSchema
 from datetime import datetime
 
 router = APIRouter()
-pwd_context = CryptContext(
-    schemes=["argon2"],  
-    deprecated="auto"
-)
 
 def get_db():
     db = SessionLocal()
