@@ -137,60 +137,85 @@ useEffect(() => {
   };
 
   const fieldStyles = {
-    "& .MuiOutlinedInput-root": {
-      color: "white",
+  "& .MuiOutlinedInput-root": {
+    color: "#2b1d26",
 
-      "& fieldset": {
-        borderColor: "#555",
-      },
+    backgroundColor: "rgba(255,255,255,0.7)",
 
-      "&:hover fieldset": {
-        borderColor: "#8b5e3c",
-      },
+    borderRadius: "14px",
 
-      "&.Mui-focused fieldset": {
-        borderColor: "#a26f46",
-      },
+    transition: "0.25s ease",
+
+    "& fieldset": {
+      borderColor: "rgba(255, 79, 163, 0.2)",
     },
 
-    "& .MuiInputLabel-root": {
-      color: "#ccc",
+    "&:hover fieldset": {
+      borderColor: "rgba(255, 79, 163, 0.5)",
     },
 
-    "& .MuiSvgIcon-root": {
-      color: "white",
+    "&.Mui-focused fieldset": {
+      borderColor: "#ff4fa3",
+      boxShadow: "0 0 0 4px rgba(255,79,163,0.15)",
     },
-  };
+  },
+
+  "& .MuiInputLabel-root": {
+    color: "#6e5a66",
+  },
+
+  "& .MuiSvgIcon-root": {
+    color: "#ff4fa3",
+  },
+};
 
   return (
     <>
       <Box
+      sx={{
+        minHeight: "100vh",
+
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+
+        px: 2,
+
+        background:
+          "linear-gradient(135deg, #fff7fb, #ffeef6)",
+      }}
+    >
+      <Paper
+        elevation={0}
         sx={{
-          minHeight: "100vh",
-          backgroundColor: "#121212",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          px: 2,
+          width: "100%",
+          maxWidth: 550,
+
+          borderRadius: 5,
+
+          p: 5,
+
+          background: "rgba(255,255,255,0.7)",
+
+          backdropFilter: "blur(16px)",
+
+          border: "1px solid rgba(255,79,163,0.15)",
+
+          boxShadow:
+            "0 15px 40px rgba(255,79,163,0.12)",
+
+          color: "#2b1d26",
         }}
       >
-        <Paper
-          elevation={8}
-          sx={{
-            width: "100%",
-            maxWidth: 550,
-            backgroundColor: "#1e1e1e",
-            borderRadius: 5,
-            p: 5,
-            color: "white",
-          }}
-        >
           <Typography
             variant="h4"
             align="center"
             mb={4}
             sx={{
-              fontWeight: "bold",
+              fontWeight: 800,
+              color: "#2b1d26",
+              letterSpacing: "-1px",
+              mb: 2,
             }}
           >
             Запись на процедуру
@@ -323,12 +348,17 @@ useEffect(() => {
                 fontSize: "16px",
                 fontWeight: "bold",
                 borderRadius: 3,
-                background:
-                  "linear-gradient(135deg, #684325, #8b5e3c)",
+
+                background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+                boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+                transition: "0.25s ease",
 
                 "&:hover": {
-                  background:
-                    "linear-gradient(135deg, #5a3820, #7a5234)",
+                  background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 14px 30px rgba(255,79,163,0.35)",
                 },
               }}
             >
@@ -348,14 +378,19 @@ useEffect(() => {
             position: "absolute",
             top: "50%",
             left: "50%",
-            transform:
-              "translate(-50%, -50%)",
+            transform: "translate(-50%, -50%)",
 
             width: 400,
-            bgcolor: "#1e1e1e",
-            color: "white",
+
+            bgcolor: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(16px)",
+
+            color: "#2b1d26",
+
             borderRadius: 4,
-            boxShadow: 24,
+
+            boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+
             p: 4,
             textAlign: "center",
           }}

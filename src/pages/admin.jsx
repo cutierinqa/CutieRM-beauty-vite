@@ -108,25 +108,25 @@ export default function Admin() {
         return (
           <TableContainer component={Paper} sx={{ mt: 3 }}>
             <Table>
-              <TableHead>
+              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
                 <TableRow>
-                  <TableCell>ФИО</TableCell>
-                  <TableCell>Телефон</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Визиты</TableCell>
-                  <TableCell>Дата первого визита</TableCell>
-                  <TableCell>Дата последнего визита</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>ФИО</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Телефон</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Email</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Визиты</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата первого визита</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата последнего визита</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.map((client) => (
                   <TableRow key={client.id_klienta}>
-                    <TableCell>{client.fio}</TableCell>
-                    <TableCell>{client.telefon}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell>{client.kolichestvo_vizitov}</TableCell>
-                    <TableCell>{client.data_pervogo_vizita}</TableCell>
-                    <TableCell>{client.data_poslednego_vizita}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.fio}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.telefon}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.email}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.kolichestvo_vizitov}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.data_pervogo_vizita}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.data_poslednego_vizita}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -135,21 +135,30 @@ export default function Admin() {
         );
       case "masters":
         return (
-          <TableContainer component={Paper} sx={{ mt: 3 }}>
+          <TableContainer
+            component={Paper}
+            sx={{
+              mt: 3,
+              background: "rgba(255,255,255,0.6)",
+              backdropFilter: "blur(14px)",
+              borderRadius: "20px",
+              border: "1px solid rgba(255,79,163,0.12)",
+              overflow: "hidden",
+            }}>
             <Table>
-              <TableHead>
+              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
                 <TableRow>
-                  <TableCell>ФИО</TableCell>
-                  <TableCell>Квалификация</TableCell>
-                  <TableCell>Специальность</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>ФИО</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Квалификация</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Специальность</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.map((master) => (
                   <TableRow key={master.id_mastera}>
-                    <TableCell>{master.fio}</TableCell>
-                    <TableCell>{master.kvalifikaciya}</TableCell>
-                    <TableCell>{master.dolzhnost}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{master.fio}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{master.kvalifikaciya}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{master.dolzhnost}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -160,11 +169,11 @@ export default function Admin() {
         return (
           <TableContainer component={Paper} sx={{ mt: 3 }}>
             <Table>
-              <TableHead>
+              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
                 <TableRow>
-                  <TableCell>Мастер</TableCell>
-                  <TableCell>Дата</TableCell>
-                  <TableCell>Время</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Мастер</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Время</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -191,25 +200,25 @@ export default function Admin() {
         return (
           <TableContainer component={Paper} sx={{ mt: 3 }}>
             <Table>
-              <TableHead>
+              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
                 <TableRow>
-                  <TableCell>Клиент</TableCell>
-                  <TableCell>Мастер</TableCell>
-                  <TableCell>Услуга</TableCell>
-                  <TableCell>Доп услуги</TableCell>
-                  <TableCell>Дата</TableCell>
-                  <TableCell>Время</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Клиент</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Мастер</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Услуга</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Доп услуги</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата</TableCell>
+                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Время</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.map((record) => (
                   <TableRow key={record.id_zapisi}>
-                    <TableCell>{record.klient}</TableCell>
-                    <TableCell>{record.master}</TableCell>
-                    <TableCell>{record.usluga}</TableCell>
-                    <TableCell>{record.dop_uslugi || "—"}</TableCell>
-                    <TableCell>{record.data}</TableCell>
-                    <TableCell>{record.vremya}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.klient}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.master}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.usluga}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.dop_uslugi || "—"}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.data}</TableCell>
+                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.vremya}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -231,27 +240,39 @@ export default function Admin() {
 
   return (
   <Box
+  sx={{
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+
+    px: 2,
+    py: 5,
+
+    background: "linear-gradient(135deg, #fff7fb, #ffeef6)",
+  }}
+>
+  <Paper
     sx={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-start",
-      px: 2,
-      py: 5,
+      width: "100%",
+      maxWidth: 1100,
+
+      p: { xs: 3, md: 5 },
+
+      borderRadius: "28px",
+
+      background: "rgba(255,255,255,0.75)",
+      backdropFilter: "blur(18px)",
+
+      border: "1px solid rgba(255,79,163,0.15)",
+
+      boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
+
+      position: "relative",
+
+      color: "#2b1d26",
     }}
   >
-    <Paper
-      sx={{
-        width: "100%",
-        maxWidth: 1100,
-        p: { xs: 3, md: 5 },
-        borderRadius: 4,
-        boxShadow: 6,
-        position: "relative",
-        backgroundColor: "#1e1e1e",
-        color: "white",
-      }}
-    >
       {/* MENU */}
       <Box
         sx={{
@@ -262,7 +283,14 @@ export default function Admin() {
         onMouseEnter={(e) => setAnchorEl(e.currentTarget)}
         onMouseLeave={() => setAnchorEl(null)}
       >
-        <IconButton sx={{ color: "white" }}>
+        <IconButton
+          sx={{
+            color: "#ffffff",
+            backgroundColor: "rgba(255,79,163,0.08)",
+            "&:hover": {
+              backgroundColor: "rgba(255,79,163,0.15)",
+            },
+          }}>
           <MenuIcon />
         </IconButton>
 
@@ -298,6 +326,10 @@ export default function Admin() {
           <MenuItem onClick={() => navigate("/admin/zapisi")}>
             Управление записями
           </MenuItem>
+
+          <MenuItem onClick={() => navigate("/admin/users")}>
+            Управление пользователями
+          </MenuItem>
         </Menu>
       </Box>
 
@@ -312,31 +344,24 @@ export default function Admin() {
         }}
       >
         <Avatar
-          sx={{
-            bgcolor: "#4b3126",
-            width: 90,
-            height: 90,
-            mx: "auto",
-            mb: 2,
-          }}
-        >
-          <PersonIcon sx={{ fontSize: 45 }} />
-        </Avatar>
+  sx={{
+    width: 90,
+    height: 90,
+    mb: 2,
 
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          sx={{ mb: 1, textAlign: "center" }}
-        >
-          {admin.fio}
-        </Typography>
+    background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
 
-        <Typography
-          variant="h6"
-          sx={{ color: "#bdbdbd" }}
-        >
-          Панель администратора
-        </Typography>
+    boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+  }}></Avatar>
+
+
+        <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
+  {admin.fio}
+</Typography>
+
+        <Typography variant="h6" sx={{ color: "#6e5a66" }}>
+  Панель администратора
+</Typography>
       </Box>
 
       {/* BUTTONS */}

@@ -7,6 +7,7 @@ class Role(Base):
     __tablename__ = "roles"
     id_role = Column(Integer, primary_key=True)
     nazvanie_role = Column(String)
+    opisanie = Column(String)
 
 class User(Base):
     __tablename__ = "users"

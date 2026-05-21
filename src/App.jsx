@@ -18,7 +18,7 @@ import Zapis from "./pages/zapis";
 import AdminMasters from "./pages/AdminMasters";
 import AdminClients from "./pages/AdminClients";
 import AdminZapisi from "./pages/AdminZapisi";
-
+import AdminUsers from "./pages/AdminUsers";
 import Admin from "./pages/admin";
 import Lk from "./pages/Lk";
 import MasterLk from "./pages/masterlk";
@@ -76,6 +76,7 @@ function App() {
         <Route path="/admin/masters" element={<AdminMasters />} />
         <Route path="/admin/clients" element={<AdminClients />} />
         <Route path="/admin/zapisi" element={<AdminZapisi />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
       </Routes>
     </>
   );

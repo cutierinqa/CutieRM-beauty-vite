@@ -2,7 +2,7 @@ import traceback
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi
+from app.models import User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi, Role
 from app.auth_utils import get_current_user
 from datetime import datetime
 
@@ -23,6 +23,132 @@ def get_admin_me(
         "email": current_user.email,
         "telefon": current_user.telefon
     }
+
+#=============ЮЗЕРЫ
+@admin_router.get("/users")
+def get_users(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    users = db.query(User).all()
+
+    result = []
+
+    for u in users:
+        role = db.query(Role).filter(
+            Role.id_role == u.id_role
+        ).first()
+
+        result.append({
+            "id_user": u.id_user,
+            "fio": u.fio,
+            "email": u.email,
+            "telefon": u.telefon,
+            "id_role": u.id_role,
+            "role": role.nazvanie_role if role else "",
+            "aktivnost": u.aktivnost,
+            "data_sozdaniya": str(u.data_sozdaniya)
+        })
+
+    return result
+
+@admin_router.post("/users")
+def create_user(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    new_user = User(
+        fio=data.get("fio"),
+        email=data.get("email"),
+        telefon=data.get("telefon"),
+        id_role=int(data.get("id_role") or 1),
+        aktivnost=True,
+        password_hash=bcrypt.hash(data.get("password"))
+    )
+
+    db.add(new_user)
+    db.commit()
+
+    return {"message": "user created"}
+
+@admin_router.put("/users/{id_user}")
+def update_user(
+    id_user: int,
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    user = db.query(User).filter(
+        User.id_user == id_user
+    ).first()
+
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    user.fio = data.get("fio")
+    user.email = data.get("email")
+    user.telefon = data.get("telefon")
+
+    if data.get("id_role"):
+        user.id_role = int(data.get("id_role"))
+
+    # пароль менять только если передан
+    if data.get("password"):
+        user.password_hash = bcrypt.hash(data.get("password"))
+
+    db.commit()
+    return {"message": "updated"}
+
+@admin_router.delete("/users/{id_user}")
+def delete_user(
+    id_user: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    user = db.query(User).filter(
+        User.id_user == id_user
+    ).first()
+
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    db.delete(user)
+    db.commit()
+
+    return {"message": "deleted"}
+
+@admin_router.get("/roles")
+def get_roles(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    roles = db.query(Role).all()
+
+    return [
+        {
+            "id_role": r.id_role,
+            "nazvanie_role": r.nazvanie_role,
+            "opisanie": r.opisanie
+        }
+        for r in roles
+    ]
+
 
 # ===================== CLIENTS LIST
 @admin_router.get("/clients")

@@ -260,27 +260,38 @@ export default function AdminRecords() {
 
   return (
     <Box
+  sx={{
+    minHeight: "100vh",
+
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+
+    px: 2,
+    py: 5,
+
+    background: "linear-gradient(135deg, #fff7fb, #ffeef6)",
+  }}
+>
+  <Paper
     sx={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-start",
-      px: 2,
-      py: 5,
-      backgroundColor: "#121212",
+      width: "100%",
+      maxWidth: 1300,
+
+      p: 4,
+
+      borderRadius: "28px",
+
+      background: "rgba(255,255,255,0.75)",
+      backdropFilter: "blur(18px)",
+
+      border: "1px solid rgba(255,79,163,0.15)",
+
+      boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
+
+      color: "#2b1d26",
     }}
   >
-    <Paper
-      sx={{
-        width: "100%",
-        maxWidth: 1200,
-        p: 4,
-        borderRadius: 4,
-        backgroundColor: "#1e1e1e",
-        color: "white",
-        boxShadow: 6,
-      }}
-    >
         {/* HEADER */}
         <Stack
           direction={{ xs: "column", md: "row" }}
@@ -292,9 +303,10 @@ export default function AdminRecords() {
           <Typography
             variant="h4"
             sx={{
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
+            fontWeight: 800,
+            textAlign: "center",
+            mb: 5,
+          }}
           >
             Управление записями
           </Typography>
@@ -303,11 +315,17 @@ export default function AdminRecords() {
             variant="contained"
             onClick={() => setAddOpen(true)}
             sx={{
-              backgroundColor: "#684325",
               px: 3,
-              py: 1,
+              py: 1.2,
+              borderRadius: "14px",
+              fontWeight: 700,
+              textTransform: "none",
+              color: "#fff",
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
               "&:hover": {
-                backgroundColor: "#5a3820",
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
               },
             }}
           >
@@ -319,10 +337,17 @@ export default function AdminRecords() {
         <Box sx={{ overflowX: "auto" }}>
           <Table
             sx={{
-              minWidth: 1000,
-              backgroundColor: "#2a2a2a",
-              borderRadius: 3,
-            }}
+                minWidth: 1100,
+
+                background: "rgba(255,255,255,0.6)",
+                backdropFilter: "blur(14px)",
+
+                borderRadius: "20px",
+
+                overflow: "hidden",
+
+                border: "1px solid rgba(255,79,163,0.12)",
+              }}
           >
             <TableHead>
               <TableRow>
@@ -339,10 +364,9 @@ export default function AdminRecords() {
                     key={index}
                     align="center"
                     sx={{
-                      color: "white",
-                      fontWeight: "bold",
-                      borderColor: "#444",
-                      backgroundColor: "#333",
+                      color: "#2b1d26",
+                      fontWeight: 600,
+                      borderColor: "rgba(255,79,163,0.1)",
                     }}
                   >
                     {title}
@@ -354,17 +378,17 @@ export default function AdminRecords() {
             <TableBody>
               {records.map((r) => (
                 <TableRow key={r.id_zapisi}>
-                <TableCell align="center" sx={{ color: "white", borderColor: "#444" }}>{r.klient}</TableCell>
-                <TableCell align="center" sx={{ color: "white", borderColor: "#444" }}>{r.master}</TableCell>
-                <TableCell align="center" sx={{ color: "white", borderColor: "#444" }}>{r.usluga}</TableCell>
-                <TableCell align="center" sx={{ color: "white", borderColor: "#444" }}>{r.dop_uslugi || "—"}</TableCell>
-                <TableCell align="center" sx={{ color: "white", borderColor: "#444" }}>{r.data}</TableCell>
-                <TableCell align="center" sx={{ color: "white", borderColor: "#444" }}>{r.vremya}</TableCell>
+                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.klient}</TableCell>
+                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.master}</TableCell>
+                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.usluga}</TableCell>
+                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.dop_uslugi || "—"}</TableCell>
+                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.data}</TableCell>
+                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.vremya}</TableCell>
 
                   <TableCell
                     align="center"
                     sx={{
-                        color: "white",
+                        color: "black",
                       borderColor: "#444",
                     }}
                   >
@@ -378,9 +402,13 @@ export default function AdminRecords() {
                         variant="contained"
                         onClick={() => handleEdit(r)}
                         sx={{
-                          backgroundColor: "#4b3126",
+                          background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+                          fontWeight: 600,
+                          textTransform: "none",
+                          borderRadius: "10px",
+
                           "&:hover": {
-                            backgroundColor: "#3a231a",
+                            transform: "translateY(-2px)",
                           },
                         }}
                       >
@@ -394,6 +422,16 @@ export default function AdminRecords() {
                         onClick={() =>
                           deleteRecord(r.id_zapisi)
                         }
+                        sx={{
+                          background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
+                          fontWeight: 600,
+                          textTransform: "none",
+                          borderRadius: "10px",
+
+                          "&:hover": {
+                            transform: "translateY(-2px)",
+                          },
+                        }}
                       >
                         Удалить
                       </Button>
@@ -410,8 +448,19 @@ export default function AdminRecords() {
           open={addOpen}
           onClose={() => setAddOpen(false)}
           fullWidth
+          PaperProps={{
+              sx: {
+                borderRadius: "20px",
+                p: 2,
+
+                background: "rgba(255,255,255,0.9)",
+                backdropFilter: "blur(16px)",
+
+                boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+              },
+            }}
         >
-          <DialogTitle>
+          <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>
             Добавить запись
           </DialogTitle>
 
@@ -420,7 +469,35 @@ export default function AdminRecords() {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setAddOpen(false)}>
+            <Button onClick={() => setAddOpen(false)} sx={{
+            
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}>
               Отмена
             </Button>
 
@@ -428,11 +505,34 @@ export default function AdminRecords() {
               variant="contained"
               onClick={createRecord}
               sx={{
-                backgroundColor: "#684325",
-                "&:hover": {
-                  backgroundColor: "#5a3820",
-                },
-              }}
+              
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
             >
               Добавить
             </Button>
@@ -445,7 +545,7 @@ export default function AdminRecords() {
           onClose={() => setEditOpen(false)}
           fullWidth
         >
-          <DialogTitle>
+          <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>
             Редактировать запись
           </DialogTitle>
 
@@ -458,7 +558,35 @@ export default function AdminRecords() {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setEditOpen(false)}>
+            <Button onClick={() => setEditOpen(false)} sx={{
+              mt: 1,
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}>
               Отмена
             </Button>
 
@@ -466,12 +594,25 @@ export default function AdminRecords() {
               variant="contained"
               onClick={handleSave}
               sx={{
-                backgroundColor: "#684325",
-                "&:hover": {
-                  backgroundColor: "#5a3820",
-                },
-              }}
-            >
+              mt: 1,
+              flex: 1,
+              py: 1.5,
+              borderRadius: "14px",
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+              color: "#fff",
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+              transition: "0.25s ease",
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+              "&:active": {
+                transform: "scale(0.98)",
+              },}}>
               Сохранить
             </Button>
           </DialogActions>

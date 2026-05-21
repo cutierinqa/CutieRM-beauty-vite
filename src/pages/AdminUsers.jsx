@@ -9,127 +9,183 @@ import {
   TableHead,
   TableRow,
   Button,
-  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Avatar,
+  TextField,
   Stack,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
 } from "@mui/material";
+
 import axios from "../api/axios";
 
-export default function AdminClients() {
+export default function AdminUsers() {
   const token = localStorage.getItem("token");
 
   const emptyForm = {
     fio: "",
-    telefon: "",
     email: "",
-    kolichestvo_vizitov: "",
-    data_pervogo_vizita: "",
-    data_poslednego_vizita: "",
+    telefon: "",
+    password: "",
+    id_role: ""
   };
 
-  const [clients, setClients] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
+
   const [form, setForm] = useState(emptyForm);
 
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [currentClient, setCurrentClient] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const loadClients = async () => {
-    const res = await axios.get("/admin/clients", {
-      headers: { Authorization: `Bearer ${token}` },
+  // =========================
+  // LOAD USERS + ROLES
+  // =========================
+  const loadUsers = async () => {
+    const res = await axios.get("/admin/users", {
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    setClients(res.data || []);
+    setUsers(res.data || []);
+  };
+
+  const loadRoles = async () => {
+    const res = await axios.get("/admin/roles");
+
+    setRoles(res.data || []);
   };
 
   useEffect(() => {
-    loadClients();
+    loadUsers();
+    loadRoles();
   }, []);
 
-  const createClient = async () => {
-    await axios.post("/admin/clients", form, {
-      headers: { Authorization: `Bearer ${token}` },
+  // =========================
+  // CREATE USER
+  // =========================
+  const createUser = async () => {
+    await axios.post("/admin/users", form, {
+      headers: { Authorization: `Bearer ${token}` }
     });
 
     setForm(emptyForm);
     setAddOpen(false);
-    loadClients();
+    loadUsers();
   };
 
-  const deleteClient = async (id) => {
-    await axios.delete(`/admin/clients/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+  // =========================
+  // DELETE USER
+  // =========================
+  const deleteUser = async (id) => {
+    await axios.delete(`/admin/users/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    loadClients();
+    loadUsers();
   };
 
-  const handleEdit = (client) => {
-  setCurrentClient({
-    id_klienta: client.id_klienta,
-    fio: client.fio || "",
-    telefon: client.telefon || "",
-    email: client.email || "",
-    kolichestvo_vizitov: client.kolichestvo_vizitov || "",
-    data_pervogo_vizita: client.data_pervogo_vizita || "",
-    data_poslednego_vizita: client.data_poslednego_vizita || "",
-  });
-
-  setEditOpen(true);
-};
+  // =========================
+  // EDIT
+  // =========================
+  const handleEdit = (user) => {
+    setCurrentUser({
+      ...user
+    });
+    setEditOpen(true);
+  };
 
   const handleSave = async () => {
     await axios.put(
-      `/admin/clients/${currentClient.id_klienta}`,
-      currentClient,
+      `/admin/users/${currentUser.id_user}`,
+      currentUser,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       }
     );
 
     setEditOpen(false);
-    loadClients();
+    loadUsers();
   };
 
-  const renderFields = (data, setData) =>
-    Object.keys(emptyForm).map((field) => (
+  // =========================
+  // RENDER FORM
+  // =========================
+  const renderFields = (data, setData) => (
+    <>
       <TextField
-        key={field}
         fullWidth
         margin="dense"
-        label={
-          field.includes("data")
-            ? ""
-            : field.replaceAll("_", " ")
-        }
-        placeholder={
-          field.includes("data")
-            ? field.replaceAll("_", " ")
-            : ""
-        }
-        type={
-          field.includes("data")
-            ? "date"
-            : "text"
-        }
-        InputLabelProps={
-          field.includes("data")
-            ? { shrink: true }
-            : {}
-        }
-        value={data[field] || ""}
+        label="ФИО"
+        value={data.fio}
         onChange={(e) =>
-          setData({
-            ...data,
-            [field]: e.target.value,
-          })
+          setData({ ...data, fio: e.target.value })
         }
       />
-    ));
+
+      <TextField
+        fullWidth
+        margin="dense"
+        label="Телефон"
+        value={data.telefon}
+        onChange={(e) =>
+          setData({ ...data, telefon: e.target.value })
+        }
+      />
+
+      <TextField
+        fullWidth
+        margin="dense"
+        label="Email"
+        value={data.email}
+        onChange={(e) =>
+          setData({ ...data, email: e.target.value })
+        }
+      />
+
+      {/* РОЛЬ */}
+      <FormControl fullWidth margin="dense">
+        <InputLabel>Роль</InputLabel>
+        <Select
+          value={data.id_role}
+          label="Роль"
+          onChange={(e) =>
+            setData({
+              ...data,
+              id_role: e.target.value
+            })
+          }
+        >
+          {roles.map((r) => (
+            <MenuItem key={r.id_role} value={r.id_role}>
+              {r.nazvanie_role}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      {/* пароль только при создании */}
+      {"password" in data && (
+        <TextField
+          fullWidth
+          margin="dense"
+          type="password"
+          label="Пароль"
+          value={data.password}
+          onChange={(e) =>
+            setData({
+              ...data,
+              password: e.target.value
+            })
+          }
+        />
+      )}
+    </>
+  );
 
   return (
     <Box
@@ -174,15 +230,16 @@ export default function AdminClients() {
           mb={4}
         >
           <Typography
-          variant="h4"
-          sx={{
+            variant="h4"
+            sx={{
             fontWeight: 800,
             textAlign: "center",
             mb: 5,
           }}
-        >
-          Управление клиентами
-        </Typography>
+          >
+            Управление пользователями
+          </Typography>
+
           <Button
             variant="contained"
             onClick={() => setAddOpen(true)}
@@ -201,15 +258,12 @@ export default function AdminClients() {
               },
             }}
           >
-            Добавить клиента
+            Добавить пользователя
           </Button>
         </Stack>
-        
 
         {/* TABLE */}
-        <Box sx={{ overflowX: "auto" }}>
-          <Table
-              sx={{
+        <Table sx={{
                 minWidth: 1100,
 
                 background: "rgba(255,255,255,0.6)",
@@ -220,112 +274,57 @@ export default function AdminClients() {
                 overflow: "hidden",
 
                 border: "1px solid rgba(255,79,163,0.12)",
-              }}
-            >
-            <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
-              <TableRow>
-                {[
-                  "ФИО",
-                  "Телефон",
-                  "Email",
-                  "Кол-во визитов",
-                  "Первый визит",
-                  "Последний визит",
-                  "Действия",
-                ].map((title, index) => (
-                  <TableCell
-                    align="center"
-                    sx={{
+              }}>
+          <TableHead>
+            <TableRow>
+              {[
+                "ФИО",
+                "Телефон",
+                "Email",
+                "Роль",
+                "Активность",
+                "Действия"
+              ].map((t) => (
+                <TableCell
+                  key={t}
+                  align="center"
+                  sx={{
                       color: "#2b1d26",
                       fontWeight: 600,
                       borderColor: "rgba(255,79,163,0.1)",
                     }}
-                  >
-                    {title}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
+                >
+                  {t}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-            <TableBody>
-              {clients.map((c) => (
-                <TableRow key={c.id_klienta}>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.fio}
-                  </TableCell>
+          <TableBody>
+            {users.map((u) => (
+              <TableRow key={u.id_user}>
+                <TableCell align="center">
+                  {u.fio}
+                </TableCell>
+                <TableCell align="center">
+                  {u.telefon}
+                </TableCell>
+                <TableCell align="center">
+                  {u.email}
+                </TableCell>
+                <TableCell align="center">
+                  {u.role}
+                </TableCell>
+                <TableCell align="center">
+                  {u.aktivnost ? "Да" : "Нет"}
+                </TableCell>
 
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.telefon}
-                  </TableCell>
-
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.email}
-                  </TableCell>
-
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.kolichestvo_vizitov}
-                  </TableCell>
-
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.data_pervogo_vizita}
-                  </TableCell>
-
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.data_poslednego_vizita}
-                  </TableCell>
-
-                  <TableCell
-                    align="center"
-                    sx={{
-                      borderColor: "#444",
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      justifyContent="center"
-                    >
-                      <Button
-                        size="small"
-                        variant="contained"
-                        onClick={() => handleEdit(c)}
-                        sx={{
+                <TableCell align="center">
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      size="small"
+                      onClick={() => handleEdit(u)}
+                      sx={{
                           background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
                           fontWeight: 600,
                           textTransform: "none",
@@ -335,15 +334,17 @@ export default function AdminClients() {
                             transform: "translateY(-2px)",
                           },
                         }}
-                      >
-                        Редактировать
-                      </Button>
+                    >
+                      Редактировать
+                    </Button>
 
-                      <Button
-                        size="small"
-                        variant="contained"
-                         onClick={() => deleteClient(c.id_klienta)} 
-                        sx={{
+                    <Button
+                      size="small"
+                      color="error"
+                      onClick={() =>
+                        deleteUser(u.id_user)
+                      }
+                      sx={{
                           background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
                           fontWeight: 600,
                           textTransform: "none",
@@ -353,23 +354,22 @@ export default function AdminClients() {
                             transform: "translateY(-2px)",
                           },
                         }}
-                      >
-                        Удалить
-                      </Button>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+                    >
+                      Удалить
+                    </Button>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-        {/* ADD DIALOG */}
+        {/* ADD */}
         <Dialog
-            open={addOpen}
-            onClose={() => setAddOpen(false)}
-            fullWidth
-            PaperProps={{
+          open={addOpen}
+          onClose={() => setAddOpen(false)}
+          fullWidth
+          PaperProps={{
               sx: {
                 borderRadius: "20px",
                 p: 2,
@@ -380,9 +380,9 @@ export default function AdminClients() {
                 boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
               },
             }}
-          >
+        >
           <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>
-            Добавить клиента
+            Добавить пользователя
           </DialogTitle>
 
           <DialogContent>
@@ -390,7 +390,8 @@ export default function AdminClients() {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setAddOpen(false)} sx={{
+            <Button onClick={() => setAddOpen(false)}
+                sx={{
             
               flex: 1,
 
@@ -423,8 +424,8 @@ export default function AdminClients() {
             </Button>
 
             <Button
+              onClick={createUser}
               variant="contained"
-              onClick={createClient}
               sx={{
               
               flex: 1,
@@ -455,31 +456,31 @@ export default function AdminClients() {
               },
             }}
             >
-              Добавить
+              Создать
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* EDIT DIALOG */}
+        {/* EDIT */}
         <Dialog
           open={editOpen}
           onClose={() => setEditOpen(false)}
           fullWidth
         >
-          <DialogTitle>
-            Редактировать клиента
+          <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>
+            Редактировать пользователя
           </DialogTitle>
 
           <DialogContent>
-            {currentClient &&
+            {currentUser &&
               renderFields(
-                currentClient,
-                setCurrentClient
+                currentUser,
+                setCurrentUser
               )}
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setEditOpen(false)} sx={{
+            <Button onClick={() => setEditOpen(false)}sx={{
               mt: 1,
               flex: 1,
 
@@ -512,38 +513,28 @@ export default function AdminClients() {
             </Button>
 
             <Button
-              variant="contained"
               onClick={handleSave}
+              variant="contained"
               sx={{
               mt: 1,
               flex: 1,
-
               py: 1.5,
               borderRadius: "14px",
-
               fontWeight: 350,
               fontSize: "16px",
               textTransform: "none",
-
               color: "#fff",
-
               background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
               boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
               transition: "0.25s ease",
-
               "&:hover": {
                 background: "linear-gradient(135deg, #e63e90, #ff70b3)",
                 transform: "translateY(-2px)",
                 boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
               },
-
               "&:active": {
                 transform: "scale(0.98)",
-              },
-            }}
-            >
+              },}}>
               Сохранить
             </Button>
           </DialogActions>

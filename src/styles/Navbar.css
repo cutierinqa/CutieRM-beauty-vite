@@ -1,46 +1,152 @@
+/* ===== NAVBAR ===== */
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
-  background:radial-gradient(at 75.38236198720878% 24.880566230435086%, hsla(0, 0%, 0%, 1) 0%, hsla(0, 0%, 0%, 0) 100%), radial-gradient(at 12.968831796429448% 0.5436477549711771%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 1) 0%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 0) 100%), radial-gradient(at 21.972326706581736% 9.782016126501736%, hsla(27.058823529411764, 100%, 50%, 1) 0%, hsla(27.058823529411764, 100%, 50%, 0) 100%), radial-gradient(at 61.569777491065935% 60.73847134178727%, hsla(0, 0%, 0%, 1) 0%, hsla(0, 0%, 0%, 0) 100%), radial-gradient(at 21.707744075904035% 67.71472787863458%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 1) 0%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 0) 100%), radial-gradient(at 79.01398106048656% 14.80663461126377%, hsla(27.058823529411764, 100%, 50%, 1) 0%, hsla(27.058823529411764, 100%, 50%, 0) 100%), radial-gradient(at 21.670599049870297% 76.20628302421481%, hsla(0, 0%, 0%, 1) 0%, hsla(0, 0%, 0%, 0) 100%), radial-gradient(at 97.53631548001984% 89.58227432944916%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 1) 0%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 0) 100%), radial-gradient(at 52.50630144121473% 6.161437255132118%, hsla(27.058823529411764, 100%, 50%, 1) 0%, hsla(27.058823529411764, 100%, 50%, 0) 100%), radial-gradient(at 22.080814837332262% 41.6498658555438%, hsla(0, 0%, 0%, 1) 0%, hsla(0, 0%, 0%, 0) 100%), radial-gradient(at 51.43585002715929% 42.30354671123504%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 1) 0%, hsla(232.6829268292683, 30.82706766917293%, 26.078431372549023%, 0) 100%);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  padding: 16px 32px;
+  margin: 16px;
+
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.55);
+
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  box-shadow:
+    0 10px 30px rgba(255, 79, 163, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+  position: sticky;
+  top: 12px;
+  z-index: 1000;
 }
+
+/* ===== LOGO ===== */
 
 .navbar .logo {
   font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  background: linear-gradient(
+    135deg,
+    #ff4fa3,
+    #ff8cc3
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  cursor: pointer;
+
+  transition: 0.3s ease;
 }
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 20px;
+.navbar .logo:hover {
+  transform: scale(1.03);
 }
 
-.nav-links li a {
-  text-decoration: none;
-  color: #ffffff;
-  font-weight: 500;
-}
+/* ===== MENU ===== */
 
-.nav-links li a:hover {
-  color: #2e3357;
-}
-
+.nav-links,
 .logout-btn {
   list-style: none;
+
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 14px;
+
+  margin: 0;
+  padding: 0;
 }
 
+/* ===== LINKS ===== */
+
+.nav-links li a,
 .logout-btn li a {
   text-decoration: none;
-  color: #ffffff;
-  font-weight: 500;
+
+  color: #5d4353;
+
+  font-weight: 600;
+  font-size: 15px;
+
+  padding: 10px 16px;
+
+  border-radius: 14px;
+
+  transition: 0.25s ease;
+}
+
+/* ===== HOVER ===== */
+
+.nav-links li a:hover,
+.logout-btn li a:hover {
+  color: #ff4fa3;
+
+  background: rgba(255, 79, 163, 0.08);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 4px 12px rgba(255, 79, 163, 0.12);
+
+  transform: translateY(-2px);
+}
+
+/* ===== ACTIVE LINK ===== */
+
+.nav-links li a.active {
+  background: linear-gradient(
+    135deg,
+    #ff4fa3,
+    #ff8cc3
+  );
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px rgba(255, 79, 163, 0.25);
+}
+
+/* ===== LOGOUT BUTTON ===== */
+
+.logout-btn li a {
+  background: rgba(255, 79, 163, 0.1);
+
+  color: #ff4fa3;
 }
 
 .logout-btn li a:hover {
-  color: #2e3357;
+  background: linear-gradient(
+    135deg,
+    #ff4fa3,
+    #ff7ab9
+  );
+
+  color: white;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 900px) {
+
+  .navbar {
+    flex-direction: column;
+    gap: 20px;
+
+    padding: 20px;
+  }
+
+  .nav-links,
+  .logout-btn {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
 }

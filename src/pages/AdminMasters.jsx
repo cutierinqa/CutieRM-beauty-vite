@@ -113,27 +113,38 @@ export default function AdminMasters() {
 
   return (
   <Box
+  sx={{
+    minHeight: "100vh",
+
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+
+    px: 2,
+    py: 5,
+
+    background: "linear-gradient(135deg, #fff7fb, #ffeef6)",
+  }}
+>
+  <Paper
     sx={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-start",
-      px: 2,
-      py: 5,
-      backgroundColor: "#121212",
+      width: "100%",
+      maxWidth: 1300,
+
+      p: 4,
+
+      borderRadius: "28px",
+
+      background: "rgba(255,255,255,0.75)",
+      backdropFilter: "blur(18px)",
+
+      border: "1px solid rgba(255,79,163,0.15)",
+
+      boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
+
+      color: "#2b1d26",
     }}
   >
-    <Paper
-      sx={{
-        width: "100%",
-        maxWidth: 1200,
-        p: 4,
-        borderRadius: 4,
-        backgroundColor: "#1e1e1e",
-        color: "white",
-        boxShadow: 6,
-      }}
-    >
       {/* HEADER */}
       <Stack
         direction={{ xs: "column", md: "row" }}
@@ -156,13 +167,19 @@ export default function AdminMasters() {
           variant="contained"
           onClick={() => setAddOpen(true)}
           sx={{
-            backgroundColor: "#684325",
-            px: 3,
-            py: 1,
-            "&:hover": {
-              backgroundColor: "#5a3820",
-            },
-          }}
+              px: 3,
+              py: 1.2,
+              borderRadius: "14px",
+              fontWeight: 700,
+              textTransform: "none",
+              color: "#fff",
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+              },
+            }}
         >
           Добавить мастера
         </Button>
@@ -171,11 +188,18 @@ export default function AdminMasters() {
       {/* TABLE */}
       <Box sx={{ overflowX: "auto" }}>
         <Table
-          sx={{
-            minWidth: 900,
-            backgroundColor: "#2a2a2a",
-            borderRadius: 3,
-          }}
+              sx={{
+                minWidth: 1100,
+
+                background: "rgba(255,255,255,0.6)",
+                backdropFilter: "blur(14px)",
+
+                borderRadius: "20px",
+
+                overflow: "hidden",
+
+                border: "1px solid rgba(255,79,163,0.12)",
+              }}
         >
           <TableHead>
             <TableRow>
@@ -189,14 +213,12 @@ export default function AdminMasters() {
                 "Действия",
               ].map((title, index) => (
                 <TableCell
-                  key={index}
-                  align="center"
-                  sx={{
-                    color: "white",
-                    fontWeight: "bold",
-                    borderColor: "#444",
-                    backgroundColor: "#333",
-                  }}
+                    align="center"
+                    sx={{
+                      color: "#2b1d26",
+                      fontWeight: 600,
+                      borderColor: "rgba(255,79,163,0.1)",
+                    }}
                 >
                   {title}
                 </TableCell>
@@ -209,42 +231,42 @@ export default function AdminMasters() {
               <TableRow key={index}>
                 <TableCell
                   align="center"
-                  sx={{ color: "white", borderColor: "#444" }}
+                  sx={{ color: "black", borderColor: "#444" }}
                 >
                   {m.fio}
                 </TableCell>
 
                 <TableCell
                   align="center"
-                  sx={{ color: "white", borderColor: "#444" }}
+                  sx={{ color: "black", borderColor: "#444" }}
                 >
                   {m.dolzhnost}
                 </TableCell>
 
                 <TableCell
                   align="center"
-                  sx={{ color: "white", borderColor: "#444" }}
+                  sx={{ color: "black", borderColor: "#444" }}
                 >
                   {m.kvalifikaciya}
                 </TableCell>
 
                 <TableCell
                   align="center"
-                  sx={{ color: "white", borderColor: "#444" }}
+                  sx={{ color: "black", borderColor: "#444" }}
                 >
                   {m.telefon}
                 </TableCell>
 
                 <TableCell
                   align="center"
-                  sx={{ color: "white", borderColor: "#444" }}
+                  sx={{ color: "black", borderColor: "#444" }}
                 >
                   {m.email}
                 </TableCell>
 
                 <TableCell
                   align="center"
-                  sx={{ color: "white", borderColor: "#444" }}
+                  sx={{ color: "black", borderColor: "#444" }}
                 >
                   {m.data_nachala_stazha}
                 </TableCell>
@@ -254,20 +276,24 @@ export default function AdminMasters() {
                   sx={{ borderColor: "#444" }}
                 >
                   <Stack
-                    direction="row"
-                    spacing={1}
-                    justifyContent="center"
-                  >
-                    <Button
-                      size="small"
-                      variant="contained"
-                      onClick={() => handleEdit(m)}
-                      sx={{
-                        backgroundColor: "#4b3126",
-                        "&:hover": {
-                          backgroundColor: "#3a231a",
-                        },
-                      }}
+                      direction="row"
+                      spacing={1}
+                      justifyContent="center"
+                    >
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => handleEdit(m)}
+                        sx={{
+                          background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+                          fontWeight: 600,
+                          textTransform: "none",
+                          borderRadius: "10px",
+
+                          "&:hover": {
+                            transform: "translateY(-2px)",
+                          },
+                        }}
                     >
                       Редактировать
                     </Button>
@@ -277,6 +303,16 @@ export default function AdminMasters() {
                       variant="contained"
                       color="error"
                       onClick={() => deleteMaster(m.id_mastera)}
+                      sx={{
+                          background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
+                          fontWeight: 600,
+                          textTransform: "none",
+                          borderRadius: "10px",
+
+                          "&:hover": {
+                            transform: "translateY(-2px)",
+                          },
+                        }}
                     >
                       Удалить
                     </Button>
@@ -293,15 +329,54 @@ export default function AdminMasters() {
         open={addOpen}
         onClose={() => setAddOpen(false)}
         fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: "20px",
+                p: 2,
+
+                background: "rgba(255,255,255,0.9)",
+                backdropFilter: "blur(16px)",
+
+                boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+              },
+            }}
       >
-        <DialogTitle>Добавить мастера</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>Добавить мастера</DialogTitle>
 
         <DialogContent>
           {renderFields(form, setForm)}
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setAddOpen(false)}>
+          <Button onClick={() => setAddOpen(false)}sx={{
+            
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}>
             Отмена
           </Button>
 
@@ -309,12 +384,35 @@ export default function AdminMasters() {
             variant="contained"
             onClick={createMaster}
             sx={{
-              backgroundColor: "#684325",
+              
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
               "&:hover": {
-                backgroundColor: "#5a3820",
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
               },
             }}
-          >
+            >
             Добавить
           </Button>
         </DialogActions>
@@ -336,7 +434,35 @@ export default function AdminMasters() {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setEditOpen(false)}>
+          <Button onClick={() => setEditOpen(false)} sx={{
+              mt: 1,
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}>
             Отмена
           </Button>
 
@@ -344,9 +470,32 @@ export default function AdminMasters() {
             variant="contained"
             onClick={handleSave}
             sx={{
-              backgroundColor: "#684325",
+              mt: 1,
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
               "&:hover": {
-                backgroundColor: "#5a3820",
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
               },
             }}
           >

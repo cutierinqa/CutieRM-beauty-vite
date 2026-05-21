@@ -8,6 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showRegister, setShowRegister] = useState(false);
   const navigate = useNavigate();
+  const [showForgot, setShowForgot] = useState(false);
 
   const handleLogin = async (e) => {
   e.preventDefault();
@@ -43,14 +44,39 @@ export default function Login() {
 };
 
   const inputStyles = {
-    input: { color: "white" },
-    "& label": { color: "white" },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": { borderColor: "#949494ff" },
-      "&:hover fieldset": { borderColor: "#4b3126" },
-      "&.Mui-focused fieldset": { borderColor: "#d6d6d6ff" }
-    }
-  };
+  "& .MuiInputBase-input": {
+    color: "#2b1d26",
+  },
+
+  "& .MuiInputLabel-root": {
+    color: "#6e5a66",
+  },
+
+  "& .MuiOutlinedInput-root": {
+    backgroundColor: "rgba(255,255,255,0.7)",
+
+    borderRadius: "14px",
+
+    transition: "0.25s ease",
+
+    "& fieldset": {
+      borderColor: "rgba(255, 79, 163, 0.2)",
+    },
+
+    "&:hover fieldset": {
+      borderColor: "rgba(255, 79, 163, 0.5)",
+    },
+
+    "&.Mui-focused fieldset": {
+      borderColor: "#ff4fa3",
+      boxShadow: "0 0 0 4px rgba(255,79,163,0.15)",
+    },
+  },
+
+  "& .MuiSvgIcon-root": {
+    color: "#ff4fa3",
+  },
+};
 
   return (
     <Box
@@ -61,7 +87,7 @@ export default function Login() {
         p: 4,
         border: 1,
         borderRadius: 2,
-        borderColor: "#4b3126",
+        borderColor: "#ff4fa3",
         boxShadow: 3
       }}
     >
@@ -95,26 +121,146 @@ export default function Login() {
           fullWidth
           sx={{
             mt: 2,
-            backgroundColor: "#4b3126",
-            color: "white"
+
+            py: 1.5,
+            borderRadius: "14px",
+
+            fontWeight: 700,
+            fontSize: "16px",
+
+            textTransform: "none",
+
+            background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+            boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+            transition: "0.25s ease",
+
+            "&:hover": {
+              background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+              transform: "translateY(-2px)",
+              boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+            },
+
+            "&:active": {
+              transform: "scale(0.98)",
+            },
           }}
         >
           Войти
         </Button>
       </form>
 
-      <Typography align="center" mt={2} color="white">
-        Нет аккаунта?{" "}
-        <Button
+      <Typography align="center" mt={3} sx={{ color: "#6e5a66" }}>
+  <Button
+    variant="text"
+    onClick={() => setShowForgot(true)}
+    sx={{
+              mt: 1,
+              ml: 1,
+
+              flex: 1,
+
+              py: 1.3,
+              borderRadius: "14px",
+
+              fontWeight: 700,
+              fontSize: "15px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
+  >
+    Забыли пароль?
+  </Button>
+          <Button
           onClick={() => setShowRegister(true)}
-          sx={{
-            color: "white",
-            "&:hover": { color: "#4b3126" }
-          }}
-        >
-          Зарегистрироваться
-        </Button>
+            variant="contained"
+            sx={{
+              mt: 1,
+              ml: 1,
+
+              flex: 1,
+
+              py: 1.3,
+              borderRadius: "14px",
+
+              fontWeight: 700,
+              fontSize: "15px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
+          >
+            Зарегистрироваться
+          </Button>
       </Typography>
+
+      <Modal open={showForgot} onClose={() => setShowForgot(false)}>
+  <Box
+    sx={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      width: 380,
+      bgcolor: "rgba(255,255,255,0.9)",
+      backdropFilter: "blur(16px)",
+      boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+      p: 4,
+      borderRadius: "20px",
+    }}
+  >
+    <Typography
+      variant="h6"
+      align="center"
+      mb={2}
+      sx={{
+        fontWeight: 800,
+        mb: 2,
+        background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+      }}
+    >
+      Восстановление пароля
+    </Typography>
+
+    <ForgotPasswordForm onClose={() => setShowForgot(false)} />
+  </Box>
+</Modal>
 
       <Modal open={showRegister} onClose={() => setShowRegister(false)}>
         <Box
@@ -123,14 +269,33 @@ export default function Login() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "#1e1e1e",
-            boxShadow: 24,
+
+            width: 420,
+
+            bgcolor: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(16px)",
+
+            boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+
             p: 4,
-            borderRadius: 2
+
+            borderRadius: "20px",
           }}
         >
-          <Typography variant="h6" align="center" mb={2} color="white">
+          <Typography
+            variant="h6"
+            align="center"
+            mb={2}
+            sx={{
+              fontWeight: 800,
+              mb:2,
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+
+              letterSpacing: "-0.5px",
+            }}
+          >
             Регистрация
           </Typography>
 
@@ -149,14 +314,28 @@ function RegisterForm({ onClose }) {
   const [errors, setErrors] = useState({});
 
   const inputStyles = {
-    input: { color: "white" },
-    "& label": { color: "white" },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": { borderColor: "#949494ff" },
-      "&:hover fieldset": { borderColor: "#4b3126" },
-      "&.Mui-focused fieldset": { borderColor: "#d6d6d6ff" }
-    }
-  };
+  "& .MuiInputBase-input": {
+    color: "#2b1d26",
+  },
+  "& .MuiInputLabel-root": {
+    color: "#6e5a66",
+  },
+  "& .MuiOutlinedInput-root": {
+    backgroundColor: "rgba(255,255,255,0.7)",
+    borderRadius: "14px",
+    transition: "0.25s ease",
+    "& fieldset": {
+      borderColor: "rgba(255, 79, 163, 0.2)",
+    },
+    "&:hover fieldset": {
+      borderColor: "rgba(255, 79, 163, 0.5)",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#ff4fa3",
+      boxShadow: "0 0 0 4px rgba(255,79,163,0.15)",
+    },
+  },
+};
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -216,22 +395,183 @@ function RegisterForm({ onClose }) {
       />
     </Stack>
 
-    <Box
-  mt={3}
-  display="flex"
-  justifyContent="center"
-  alignItems="center"
-  gap={2}
-  width="100%"
->
-  <Button type="submit" variant="contained" sx={{ mt: 3,  ml : 4  }}>
-    Зарегистрироваться
-  </Button>
+    <Box mt={2} display="flex" gap={2} width="100%">
+  <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+            mt: 1,
 
-  <Button onClick={onClose} variant="outlined" sx={{ mt: 3, ml : 3 }}>
-    Закрыть
-  </Button>
+            py: 1.5,
+            borderRadius: "14px",
+
+            fontWeight: 700,
+            fontSize: "16px",
+
+            textTransform: "none",
+
+            background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+            boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+            transition: "0.25s ease",
+
+            "&:hover": {
+              background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+              transform: "translateY(-2px)",
+              boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+            },
+
+            "&:active": {
+              transform: "scale(0.98)",
+            },
+          }}
+        >
+          Зарегистрироваться
+        </Button>
+
+  <Button
+          onClick={onClose}
+          variant="outlined"
+          fullWidth
+          sx={{
+              mt: 1,
+              flex: 1,
+
+              py: 1.5,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "16px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
+        >
+          Закрыть
+        </Button>
 </Box>
   </form>
 );
+}
+
+function ForgotPasswordForm({ onClose }) {
+  const [telefon, setTelefon] = useState("+7");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Если номер существует — код отправлен (фиктивно)");
+    onClose();
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Stack spacing={2}>
+        <TextField
+          label="Введите номер телефона"
+          value={telefon}
+          onChange={(e) => setTelefon(e.target.value)}
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "14px",
+            },
+          }}
+        />
+      </Stack>
+
+      <Box mt={3} display="flex" gap={2}>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+              mt: 1,
+              flex: 1,
+
+              py: 1.3,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "15px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
+        >
+          Получить код
+        </Button>
+
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          fullWidth
+          sx={{
+              mt: 1,
+              flex: 1,
+
+              py: 1.3,
+              borderRadius: "14px",
+
+              fontWeight: 350,
+              fontSize: "15px",
+              textTransform: "none",
+
+              color: "#fff",
+
+              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+
+              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+
+              transition: "0.25s ease",
+
+              "&:hover": {
+                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
+              },
+
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
+        >
+          Закрыть
+        </Button>
+      </Box>
+    </form>
+  );
 }
