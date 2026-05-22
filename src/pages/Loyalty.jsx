@@ -74,19 +74,34 @@ export default function Loyalty() {
         position: "relative"
       }}
     >
-      {/* Кнопка "Назад" */}
-      <IconButton
-        onClick={() => navigate("/Lk")}
-        sx={{
-          position: "absolute",
-          top: 16,
-          left: 16,
-          backgroundColor: "#f0f0f0",
-          "&:hover": { backgroundColor: "#e0e0e0" },
-        }}
-      >
-        <ArrowBackIcon />
-      </IconButton>
+      {/* КНОПКА НАЗАД */}
+    <IconButton
+      onClick={() => navigate("/Lk")}
+      sx={{
+        position: "absolute",
+        top: 20,
+        left: 20,
+
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(10px)",
+
+        border: "1px solid rgba(255,79,163,0.15)",
+
+        boxShadow:
+          "0 8px 20px rgba(255,79,163,0.12)",
+
+        color: "#ff4fa3",
+
+        transition: "0.2s ease",
+
+        "&:hover": {
+          background: "#fff0f7",
+          transform: "translateY(-2px)",
+        },
+      }}
+    >
+      <ArrowBackIcon />
+    </IconButton>
 
       <Box className="card-container">
         <Box className="card-flip">
@@ -114,13 +129,26 @@ export default function Loyalty() {
               {/* Кнопка "История начислений" */}
               <Button
                 variant="contained"
-                sx={{
-                  backgroundColor: "#4b3126",
-                  "&:hover": { backgroundColor: "#3a231a" },
-                  mt: 2,
-                  px: 4,
-                  py: 1.5,
-                  fontSize: "1rem"
+                sx={{ 
+              py: 2,
+              borderRadius: "14px",
+
+              fontWeight: 700,
+
+              textTransform: "none",
+
+              borderColor: "#e63e90",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+
+              boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+
+              "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3"
+              }
                 }}
                 onClick={() => alert("Пока что функционал не реализован")}
               >

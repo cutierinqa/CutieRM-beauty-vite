@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Table, Integer, String, Date, DateTime, ForeignKey, Float, Time
+from sqlalchemy import Column, Table, Integer, String, Date, DateTime, ForeignKey, Float, Time, Text
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime
@@ -22,6 +22,8 @@ class User(Base):
 
     aktivnost = Column(DateTime, default=datetime.utcnow)
     data_sozdaniya = Column(DateTime, default=datetime.utcnow)
+    avatar = Column(String, default="user")
+    theme_color = Column(String, default="pink")
 
     role = relationship("Role", backref="users")
 
@@ -161,8 +163,9 @@ class ProgrammaLoyalnosti(Base):
 
     klient = relationship("Klient", back_populates="programma_loyalnosti")
     
-    class Shift(Base):
-        __tablename__ = "shifts"
+    
+class Shift(Base):
+    __tablename__ = "shifts"
 
     id_shift = Column(Integer, primary_key=True, index=True)
 
@@ -170,11 +173,17 @@ class ProgrammaLoyalnosti(Base):
         Integer,
         ForeignKey("mastera.id_mastera")
     )
+
     data_smeny = Column(Date)
+
     vremya_nachala = Column(Time)
+
     vremya_okonchaniya = Column(Time)
+
     tip_smeny = Column(String(50))
-    kommentarii = Column(String(255))
+
+    kommentarii = Column(Text)
+
     master = relationship(
         "Master",
         backref="shifts"

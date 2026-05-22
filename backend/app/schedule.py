@@ -1,70 +1,52 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import SessionLocal
-from app.models import Master, Shift
+from app import models
 
 schedule_router = APIRouter()
+
 
 # ======================
 # DB
 # ======================
-
 def get_db():
     db = SessionLocal()
-
     try:
         yield db
     finally:
         db.close()
 
-# ======================
-# GET SCHEDULE
-# ======================
 
-@schedule_router.get("/")
-def get_schedule(
-    db: Session = Depends(get_db)
-):
+# ======================
+# FULL SCHEDULE
+# ======================
+@schedule_router.get("/schedule")
+def get_schedule(db: Session = Depends(get_db)):
 
-    masters = db.query(Master).all()
+    masters = db.query(models.Master).options(
+        joinedload(models.Master.shifts)
+    ).all()
 
     result = []
 
-    for master in masters:
-
-        shifts = db.query(Shift).filter(
-            Shift.id_mastera == master.id_mastera
-        ).all()
-
-        shift_list = []
-
-        for shift in shifts:
-            shift_list.append({
-                "id_shift": shift.id_shift,
-
-                "date": str(shift.data_smeny),
-
-                "start":
-                    shift.vremya_nachala.strftime("%H:%M"),
-
-                "end":
-                    shift.vremya_okonchaniya.strftime("%H:%M"),
-
-                "type": shift.tip_smeny,
-
-                "comment":
-                    shift.kommentarii
-            })
-
+    for m in masters:
         result.append({
-            "id_mastera": master.id_mastera,
-
-            "fio": master.fio,
-
-            "foto": master.foto,
-
-            "shifts": shift_list
-        })
+    "id_mastera": m.id_mastera,
+    "fio": m.fio,
+    "dolzhnost": m.dolzhnost,
+    "kvalifikaciya": m.kvalifikaciya,   # 🔥 ВОТ ЭТО ДОБАВИТЬ
+    "foto": f"http://127.0.0.1:8000/uploads/{m.foto}" if m.foto else None,
+    "shifts": [
+        {
+            "id_shift": s.id_shift,
+            "data_smeny": str(s.data_smeny),
+            "vremya_nachala": str(s.vremya_nachala),
+            "vremya_okonchaniya": str(s.vremya_okonchaniya),
+            "tip_smeny": s.tip_smeny,
+        }
+        for s in m.shifts
+    ]
+})
 
     return result

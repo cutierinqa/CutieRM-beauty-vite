@@ -16,6 +16,21 @@ import PersonIcon from "@mui/icons-material/Person";
 import MenuIcon from "@mui/icons-material/Menu";
 import axios from "../api/axios";
 
+const avatars = {
+  flower: "/src/assets/avatars/flower.png",
+  woman: "/src/assets/avatars/woman.png",
+  man: "/src/assets/avatars/man.png",
+  user: "/src/assets/avatars/user.png",
+  heart: "/src/assets/avatars/heart.png",
+};
+
+const colors = [
+  { id: "pink", color: "#ff4fa3" },
+  { id: "purple", color: "#8b5cf6" },
+  { id: "blue", color: "#3b82f6" },
+  { id: "mint", color: "#10b981" },
+];
+
 export default function Lk() {
   const [client, setClient] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -30,7 +45,7 @@ export default function Lk() {
           return;
         }
 
-        const res = await axios.get("/client/me", {
+        const res = await axios.get("/profile/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -59,6 +74,7 @@ export default function Lk() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        background: client.bg_color || "#f5f5f5",
         px: 2,
       }}
     >
@@ -101,7 +117,7 @@ export default function Lk() {
               Программа лояльности
             </MenuItem>
             <MenuItem onClick={() => { navigate("/history"); setAnchorEl(null); }}>
-              История посещений
+              Мои записи
             </MenuItem>
             <MenuItem onClick={() => { navigate("/settings"); setAnchorEl(null); }}>
               Настройки
@@ -111,15 +127,18 @@ export default function Lk() {
 
         {/* аватар */}
         <Avatar
-          sx={{
-            bgcolor: "primary.main",
-            mb: 2,
-            width: 80,
-            height: 80
-          }}
-        >
-          <PersonIcon sx={{ fontSize: 40 }} />
-        </Avatar>
+        src={client.avatar ? avatars[client.avatar] : undefined}
+        sx={{
+          mb: 2,
+          width: 90,
+          height: 90,
+          bgcolor: client.bg_color || "#4b3126",
+          border: "3px solid rgba(255,255,255,0.3)",
+          boxShadow: 3
+        }}
+      >
+        {!client.avatar && <PersonIcon sx={{ fontSize: 40 }} />}
+      </Avatar>
 
         <Typography variant="h4" fontWeight={600}>
           {client.fio}

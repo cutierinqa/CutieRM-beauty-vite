@@ -14,6 +14,7 @@ from app.master import master_router
 from app.models import User, Klient, Master, Zapisi, Usluga
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from app.profile import profile_router
 
 from fastapi.staticfiles import StaticFiles
 app = FastAPI()
@@ -34,12 +35,9 @@ app.include_router(loyalty_router)
 app.include_router(admin_router)
 app.include_router(history_router)
 app.include_router(master_router, prefix="/master")
-app.include_router(
-    schedule_router,
-    prefix="/schedule",
-    tags=["Schedule"]
-)
-print("MASTER ROUTES IN APP:", app.routes)
+app.include_router(schedule_router)
+app.include_router(profile_router)
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
@@ -122,5 +120,3 @@ def get_masters():
     conn.close()
     return masters
 
-print("MASTER ROUTER OBJECT:", master_router)
-print("MASTER ROUTES:", getattr(master_router, "routes", None))

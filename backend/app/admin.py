@@ -460,30 +460,35 @@ def create_record(
         print("USER:", current_user.id_user)
 
         klient = db.query(Klient).filter(
-            Klient.id_klienta == int(data.get("id_klienta"))
-        ).first()
+        Klient.id_user == current_user.id_user
+    ).first()
 
         if not klient:
-            raise HTTPException(
-                status_code=404,
-                detail="Клиент не найден"
-            )
+             raise HTTPException(status_code=404, detail="Клиент не найден")
+        vremya_str = data.get("vremya")
+
+        if len(vremya_str) == 5:
+            vremya_obj = datetime.strptime(
+                vremya_str,
+                "%H:%M"
+            ).time()
+        else:
+            vremya_obj = datetime.strptime(
+                vremya_str,
+                "%H:%M:%S"
+            ).time()
 
         # СОЗДАЕМ ОСНОВНУЮ ЗАПИСЬ
         new_record = Zapisi(
-            id_klienta=klient.id_klienta,
-            id_mastera=int(data.get("id_mastera")),
-            id_uslugi=int(data.get("id_uslugi")),
-            data=datetime.strptime(
-    data.get("data"),
-    "%Y-%m-%d"
-).date(),
-
-vremya=datetime.strptime(
-    data.get("vremya"),
-    "%H:%M"
-).time()
-        )
+        id_klienta=klient.id_klienta,
+        id_mastera=int(data.get("id_mastera")),
+        id_uslugi=int(data.get("id_uslugi")),
+        data=datetime.strptime(
+            data.get("data"),
+            "%Y-%m-%d"
+                ).date(),
+                vremya=vremya_obj
+)
 
         db.add(new_record)
         db.flush()
@@ -705,46 +710,37 @@ def get_my_history(
         Zapisi.id_klienta == klient.id_klienta
     ).all()
 
-    result = []
+    now = datetime.now()
+
+    past = []
+    upcoming = []
 
     for r in records:
 
-        # ОСНОВНАЯ УСЛУГА
-        main_service = db.query(Usluga).filter(
-            Usluga.id_uslugi == r.id_uslugi
-        ).first()
+        record_datetime = datetime.strptime(
+            f"{r.data} {r.vremya}",
+            "%Y-%m-%d %H:%M:%S"
+        )
 
-        # ДОП УСЛУГИ
-        extra_rows = db.execute(
-            zapisi_dop_uslugi.select().where(
-                zapisi_dop_uslugi.c.id_zapisi == r.id_zapisi
-            )
-        ).fetchall()
-
-        extra_services = []
-
-        for extra in extra_rows:
-
-            usluga = db.query(Usluga).filter(
-                Usluga.id_uslugi == extra.id_uslugi
-            ).first()
-
-            if usluga:
-                extra_services.append(usluga.nazvanie)
-
-        result.append({
+        item = {
             "id_zapisi": r.id_zapisi,
             "data": str(r.data),
             "vremya": str(r.vremya),
 
-            "master": r.master.fio,
+            "master": r.master.fio if r.master else "",
 
             "usluga": (
-                main_service.nazvanie
-                if main_service else ""
-            ),
+                r.usluga.nazvanie
+                if r.usluga else ""
+            )
+        }
 
-            "dop_uslugi": ", ".join(extra_services)
-        })
+        if record_datetime < now:
+            past.append(item)
+        else:
+            upcoming.append(item)
 
-    return result
+    return {
+        "past": past,
+        "upcoming": upcoming
+    }
