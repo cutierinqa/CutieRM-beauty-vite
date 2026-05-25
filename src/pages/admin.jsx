@@ -93,6 +93,9 @@ export default function Admin() {
         case "records":
           url = "/admin/records";
           break;
+         case "payments":
+          url = "/admin/payments";
+          break;
         default:
           setLoading(false);
           return;
@@ -648,6 +651,102 @@ case "uslugi":
       </Table>
     </TableContainer>
   );
+
+ case "payments":
+  return (
+    <TableContainer component={Paper} sx={tableContainerSx}>
+      <Table>
+
+        <TableHead
+          sx={{
+            background: "rgba(255,79,163,0.08)",
+          }}
+        >
+          <TableRow>
+
+            <TableCell sx={tableHeadCellSx}>
+              Клиент
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Услуга
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Сумма
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Оплачено
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Бонусами
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Тип оплаты
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Дата платежа
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Начислено бонусов
+            </TableCell>
+
+          </TableRow>
+        </TableHead>
+<TableBody>
+  {data.map((payment) => (
+    <TableRow
+      key={payment.id_platyzha}
+      hover
+      sx={tableRowSx}
+    >
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.klient}
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.usluga}
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.summa} ₽
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.summa_fact} ₽
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.summa_bonus || 0} ₽
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.tip_oplaty}
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.data_platyzha
+          ? new Date(payment.data_platyzha).toLocaleDateString()
+          : "—"}
+      </TableCell>
+
+      <TableCell sx={tableBodyCellSx}>
+        {payment.nachisleno_bonusov || 0}
+      </TableCell>
+
+    </TableRow>
+  ))}
+</TableBody>
+
+      </Table>
+    </TableContainer>
+  );
       default:
         return null;
     }
@@ -672,7 +771,7 @@ case "uslugi":
     px: 2,
     py: 5,
 
-    background: "linear-gradient(135deg, #fff7fb, #ffeef6)",
+    background: "var(--bg-main)",
   }}
 >
   <Paper
@@ -936,7 +1035,34 @@ case "uslugi":
         >
           Записи
         </Button>
+        <Button
+          variant="contained"
+          onClick={() => fetchData("payments")}
+          sx={{
+                py: 1.2,
+                minWidth: 170,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)", 
+                border: "2px solid #ff4fa3",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
+        >
+          Платежи
+        </Button>
       </Stack>
+
 
       {/* CONTENT */}
       {loading ? (

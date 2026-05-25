@@ -1166,3 +1166,60 @@ def delete_usluga(
     return {
         "message": "Услуга удалена"
     }
+
+@admin_router.get("/payments")
+def get_payments(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    payments = (
+        db.query(Platyzhi)
+        .options(
+            joinedload(Platyzhi.zapis)
+            .joinedload(Zapisi.klient),
+
+            joinedload(Platyzhi.zapis)
+            .joinedload(Zapisi.usluga)
+        )
+        .all()
+    )
+
+    result = []
+
+    for p in payments:
+
+        result.append({
+            "id_platyzha": p.id_platyzha,
+
+            "klient": (
+                p.zapis.klient.fio
+                if p.zapis and p.zapis.klient
+                else "—"
+            ),
+
+            "usluga": (
+                p.zapis.usluga.nazvanie
+                if p.zapis and p.zapis.usluga
+                else "—"
+            ),
+
+            "summa": float(p.summa),
+
+            "summa_fact": float(p.summa_fact),
+
+            "summa_bonus": float(p.summa_bonus),
+
+            "tip_oplaty": p.tip_oplaty,
+
+            "data_platyzha": str(p.data_platyzha),
+
+            "nachisleno_bonusov": float(
+                p.nachisleno_bonusov
+            )
+        })
+
+    return result

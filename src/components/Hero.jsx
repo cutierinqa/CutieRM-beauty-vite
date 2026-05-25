@@ -36,7 +36,7 @@ const Hero = () => {
         <h1>NOVA</h1>
         <p>New, Organized, Visits, Appointments</p>
         <Link to="/zapis">
-  <button>
+  <button className="btn-book">
     Записаться
   </button>
 </Link>

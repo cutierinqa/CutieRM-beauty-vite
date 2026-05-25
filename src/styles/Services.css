@@ -2,145 +2,156 @@
 
 .services-page {
   padding: 60px 20px;
-
   font-family: "Inter", sans-serif;
+  color: var(--text-main);
 }
 
 /* ===== TITLE ===== */
 
 .services-page h1 {
   text-align: center;
-
   margin-bottom: 50px;
-
   font-size: 52px;
   font-weight: 800;
-
   letter-spacing: -2px;
-
-  color: #ff4fa3;
+  color: var(--nav-text);
 }
 
-/* ===== CATEGORIES GRID (5 В РЯД) ===== */
+/* ===== GRID ===== */
 
 .categories-grid {
   display: grid;
-
-  /* 5 колонок фиксировано */
   grid-template-columns: repeat(5, 1fr);
-
   gap: 20px;
-
   max-width: 1200px;
-
   margin: 0 auto 40px;
-}
-
-
-.category-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 10px;
-
-  position: relative;
-  z-index: 2; /* чтобы текст был над фоном */
-}
-
-.category-icon {
-  width: 60px;
-  height: 60px;
-
-  object-fit: contain; /* ключевое — НЕ растягивает PNG */
-
-  display: block;
-
-  opacity: 0.9;
 }
 
 /* ===== CATEGORY CARD ===== */
 
 .category-card {
   position: relative;
-  height: 150px; /* фиксируем высоту */
-  overflow: hidden;
-  background-size: contain; /* 👈 не растягивает */
-  background-repeat: no-repeat;
-  background-position: center; /* 👈 центр */
-  padding: 38px 30px;
+  height: 150px;
+
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+
+  border-radius: 28px;
+
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  border-radius: 28px;
-  background:
-  rgba(255, 255, 255, 0.55);
-  border:
-  2px solid #ff4fa3;
-  color: #ff4fa3;
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.35s ease;
-  box-shadow:
-  0 10px 30px rgba(255, 79, 163, 0.12);
-  min-height: 140px;
-  display: flex;
-  align-items: flex-end;
+
+  padding: 30px;
+
+  box-shadow: var(--shadow);
+
+  transition: 0.3s ease;
+
+  color: var(--nav-text);
 }
 
-/* ===== DECORATIVE GLOW ===== */
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(255, 79, 163, 0.2);
+}
+
+/* ===== DECOR GLOW ===== */
 
 .category-card::before {
   content: "";
-
   position: absolute;
-
-  width: 180px;
-  height: 180px;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(255, 79, 164, 0.342),
-      transparent 70%
-    );
-
-  top: -70px;
-  right: -70px;
+  width: 160px;
+  height: 160px;
+  top: -60px;
+  right: -60px;
 
   transition: 0.4s ease;
 }
 
-/* ===== HOVER ===== */
+/* ===== CONTENT ===== */
 
-.category-card:hover {
-  transform: translateY(-6px);
+.category-content {
+  position: relative;
+  z-index: 2;
 
-  box-shadow:
-    0 18px 40px rgba(255, 79, 163, 0.2);
-
-  border-color:
-    rgba(255, 79, 163, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-.category-card:hover::before {
-  transform: scale(1.2);
+.category-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
-/* ===== ACTIVE CARD ===== */
+/* ===== ACTIVE ===== */
 
-.category-card.active .category-content span {
-  color: #ff4fa3;
+.category-card.active {
+  border-color: var(--nav-text);
 }
 
-.category-card.active .category-icon {
-  
-  color: #ff4fa3;
+/* ===== SERVICES LIST ===== */
+
+.services-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: 0.4s ease;
+  padding: 0 10px;
 }
 
-/* ===== MOBILE ===== */
+.services-list.open {
+  max-height: 1200px;
+  padding: 24px 10px;
+}
+
+/* ===== SERVICE ITEM ===== */
+
+.service-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+
+  border-radius: 22px;
+
+  padding: 20px 24px;
+  margin-bottom: 18px;
+
+  box-shadow: var(--shadow);
+
+  transition: 0.3s ease;
+}
+
+.service-item:hover {
+  transform: translateY(-4px);
+}
+
+/* ===== TEXT ===== */
+
+.service-item h3 {
+  color: var(--nav-text);
+  margin-bottom: 10px;
+}
+
+.service-info {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+}
+
+/* PRICE */
+
+.service-info span:last-child {
+  background: var(--accent-light);
+  color: var(--text-secondary);
+
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* ===== RESPONSIVE ===== */
 
 @media (max-width: 1100px) {
   .categories-grid {
@@ -152,126 +163,8 @@
   .categories-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-/* ===== SERVICES LIST ===== */
-
-.services-list {
-  max-height: 0;
-
-  overflow: hidden;
-
-  transition:
-    max-height 0.5s ease,
-    padding 0.4s ease;
-
-  padding: 0 10px;
-}
-
-.services-list.open {
-  max-height: 1200px;
-
-  padding: 24px 10px;
-}
-
-/* ===== SERVICE ITEM ===== */
-
-.service-item {
-  background:
-    rgba(255, 255, 255, 0.55);
-
-
-  border:
-    1px solid rgba(255, 255, 255, 0.45);
-
-  border-radius: 22px;
-
-  padding: 20px 24px;
-
-  margin-bottom: 18px;
-
-  box-shadow:
-    0 10px 25px rgba(255, 79, 163, 0.08);
-
-  transition: 0.3s ease;
-}
-
-/* ===== SERVICE ITEM HOVER ===== */
-
-.service-item:hover {
-  transform: translateY(-4px);
-
-  box-shadow:
-    0 18px 35px rgba(255, 79, 163, 0.16);
-
-  border-color:
-    rgba(255, 79, 163, 0.18);
-}
-
-/* ===== SERVICE TITLE ===== */
-
-.service-item h3 {
-  margin: 0 0 12px;
-
-  font-size: 22px;
-  font-weight: 700;
-
-  color: #2b1d26;
-}
-
-/* ===== SERVICE INFO ===== */
-
-.service-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-top: 14px;
-
-  font-size: 15px;
-  font-weight: 600;
-
-  color: #6e5a66;
-}
-
-/* ===== PRICE ===== */
-
-.service-info span:last-child {
-  padding: 8px 14px;
-
-  border-radius: 12px;
-
-  background:
-    rgba(255, 79, 163, 0.1);
-
-  color: #ff4fa3;
-
-  font-weight: 700;
-}
-
-/* ===== MOBILE ===== */
-
-@media (max-width: 768px) {
 
   .services-page h1 {
     font-size: 38px;
   }
-
-  .category-card {
-    min-height: 120px;
-
-    padding: 28px 22px;
-
-    font-size: 18px;
-  }
-
-  .service-item h3 {
-    font-size: 19px;
-  }
-
-  .service-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
 }

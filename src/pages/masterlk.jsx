@@ -10,6 +10,15 @@ import {
   Button,
   Avatar,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableContainer,
   CircularProgress
 } from "@mui/material";
 
@@ -27,6 +36,11 @@ export default function LkMaster() {
   useEffect(() => {
     loadMaster();
   }, []);
+
+  const [openCurrent, setOpenCurrent] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
+  const [currentRecords, setCurrentRecords] = useState([]);
+  const [historyRecords, setHistoryRecords] = useState([]);
 
   const loadMaster = async () => {
     try {
@@ -59,6 +73,48 @@ export default function LkMaster() {
       </Box>
     );
   }
+
+  const loadCurrentRecords = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get(
+      "/master/current-records",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    setCurrentRecords(res.data);
+    setOpenCurrent(true);
+
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const loadHistoryRecords = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get(
+      "/master/history-records",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    setHistoryRecords(res.data);
+    setOpenHistory(true);
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <Box
@@ -170,7 +226,7 @@ export default function LkMaster() {
           <Button
             startIcon={<EventIcon />}
             variant="contained"
-            onClick={() => navigate("/master/zapisi")}
+            onClick={loadCurrentRecords}
             sx={{
               py: 1.5,
               borderRadius: "14px",
@@ -198,7 +254,7 @@ export default function LkMaster() {
           <Button
             startIcon={<ScheduleIcon />}
             variant="contained"
-            onClick={() => navigate("/schedule")}
+            onClick={() => navigate("/master/schedule")}
             sx={{
               py: 1.5,
               borderRadius: "14px",
@@ -226,7 +282,7 @@ export default function LkMaster() {
           <Button
             startIcon={<HistoryIcon />}
             variant="contained"
-            onClick={() => navigate("/master/history")}
+            onClick={loadHistoryRecords}
             sx={{
               py: 1.5,
               borderRadius: "14px",
@@ -280,6 +336,124 @@ export default function LkMaster() {
           </Button>
         </Stack>
       </Paper>
+      <Dialog
+  open={openCurrent}
+  onClose={() => setOpenCurrent(false)}
+  maxWidth="md"
+  fullWidth
+>
+  <DialogTitle>
+    Актуальные записи
+  </DialogTitle>
+
+  <DialogContent>
+
+    <TableContainer>
+
+      <Table>
+
+        <TableHead>
+          <TableRow>
+
+            <TableCell>Клиент</TableCell>
+            <TableCell>Услуга</TableCell>
+            <TableCell>Дата</TableCell>
+            <TableCell>Время</TableCell>
+
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+
+          {currentRecords.map((item) => (
+            <TableRow key={item.id_zapisi}>
+
+              <TableCell>
+                {item.klient}
+              </TableCell>
+
+              <TableCell>
+                {item.usluga}
+              </TableCell>
+
+              <TableCell>
+                {item.data}
+              </TableCell>
+
+              <TableCell>
+                {item.vremya}
+              </TableCell>
+
+            </TableRow>
+          ))}
+
+        </TableBody>
+
+      </Table>
+
+    </TableContainer>
+
+  </DialogContent>
+</Dialog>
+<Dialog
+  open={openHistory}
+  onClose={() => setOpenHistory(false)}
+  maxWidth="md"
+  fullWidth
+>
+  <DialogTitle>
+    История записей
+  </DialogTitle>
+
+  <DialogContent>
+
+    <TableContainer>
+
+      <Table>
+
+        <TableHead>
+          <TableRow>
+
+            <TableCell>Клиент</TableCell>
+            <TableCell>Услуга</TableCell>
+            <TableCell>Дата</TableCell>
+            <TableCell>Время</TableCell>
+
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+
+          {historyRecords.map((item) => (
+            <TableRow key={item.id_zapisi}>
+
+              <TableCell>
+                {item.klient}
+              </TableCell>
+
+              <TableCell>
+                {item.usluga}
+              </TableCell>
+
+              <TableCell>
+                {item.data}
+              </TableCell>
+
+              <TableCell>
+                {item.vremya}
+              </TableCell>
+
+            </TableRow>
+          ))}
+
+        </TableBody>
+
+      </Table>
+
+    </TableContainer>
+
+  </DialogContent>
+</Dialog>
     </Box>
   );
 }

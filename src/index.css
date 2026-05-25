@@ -3,39 +3,65 @@
   --bg-main: #fff7fb;
   --bg-secondary: #ffeef6;
   --card-bg: rgba(255, 255, 255, 0.65);
-
   --text-main: #2b1d26;
   --text-secondary: #6e5a66;
-
   --accent: #ff4fa3;
+  --accent2: #ff4fa3;
   --accent-hover: #e63e90;
   --accent-light: #ffb7d5;
-
   --border: rgba(255, 255, 255, 0.4);
-
   --shadow: 0 10px 30px rgba(255, 79, 163, 0.15);
-
+  --nav-bg: rgba(255, 255, 255, 0.75);
+  --nav-text: #2b1d26;
   --blur: blur(18px);
+  --glow-1: rgba(255, 212, 232, 0.6);
+  --glow-2: rgba(255, 194, 221, 0.5);
+  --btn-bg: linear-gradient(135deg, #ff4fa3, #ff8ec6);
+  --btn-text: #ffffff;
+  --btn-hover-bg: linear-gradient(135deg, #e63e90, #ff70b3);
+  --surface: rgba(255, 255, 255, 0.55);
+  --surface-border: rgba(255, 79, 163, 0.25);
+  --text-primary: #2b1d26;
+  --text-muted: #6e5a66;
+  --card-glow: rgba(255, 79, 163, 0.12);
+  --card-glow-hover: rgba(255, 79, 163, 0.2);
 }
 
 /* ====== ТЕМНАЯ ТЕМА  ====== */
-
 [data-theme="dark"] {
-  --bg-main: #151018;
-  --bg-secondary: #21141f;
-  --card-bg: rgba(33, 20, 31, 0.7);
-
-  --text-main: #fff2f7;
-  --text-secondary: #d3b7c5;
-
-  --accent: #ff5cab;
+  --bg-main: #120b10;
+  --bg-secondary: #291b25;
+  --card-bg: rgba(43, 41, 42, 0.75);
+  --nav-bg: #0f0a0d;
+  --nav-text: #ffffff;
+  --text-main: #ffeaf4;
+  --text-secondary: #caa9b8;
+   --accent2: #d1d1d1;
+  --accent: #303030;
   --accent-hover: #ff3f97;
-  --accent-light: #3a2232;
-
-  --border: rgba(255, 255, 255, 0.08);
-
-  --shadow: 0 10px 30px rgba(255, 92, 171, 0.2);
+  --accent-light: #3a1f2d;
+  --border: rgba(255, 255, 255, 0.07);
+  --shadow: 0 14px 40px rgba(255, 92, 171, 0.22);
+  --blur: blur(20px);
+  --glow-1: rgba(255, 92, 171, 0.089);
+  --glow-2: rgba(255, 63, 149, 0.089);
+  --btn-bg: #000000;
+  --btn-text: #ff4fa3;
+  --btn-hover-bg: #111111;
+  --surface: rgba(20, 12, 18, 0.65);
+  --surface-border: rgba(255, 92, 171, 0.15);
+  --text-primary: #ffeaf4;
+  --text-muted: #caa9b8;
+  --card-glow: rgba(255, 92, 171, 0.08);
+  --card-glow-hover: rgba(255, 92, 171, 0.18);
 }
+[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 92, 171, 0.048) 0%, transparent 40%),
+    radial-gradient(circle at bottom right, rgba(255, 63, 149, 0.041) 0%, transparent 45%),
+    linear-gradient(135deg, var(--bg-main), var(--bg-secondary));
+}
+
 
 
 /* ====== BODY ====== */
@@ -47,12 +73,22 @@ body {
   color: var(--text-main);
 
   background:
-    radial-gradient(circle at top left, #ffd4e8 0%, transparent 30%),
-    radial-gradient(circle at bottom right, #ffc2dd 0%, transparent 35%),
+    radial-gradient(circle at top left, #ffd4e8e1 0%, transparent 30%),
+    radial-gradient(circle at bottom right, #ffc2ddef 0%, transparent 35%),
     linear-gradient(135deg, var(--bg-main), var(--bg-secondary));
 
-  background-attachment: fixed;
   overflow-x: hidden;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at top left, var(--glow-1) 0%, transparent 40%),
+    radial-gradient(circle at bottom right, var(--glow-2) 0%, transparent 45%),
+    linear-gradient(135deg, var(--bg-main), var(--bg-secondary));
 }
 
 /* ====== КАРТОЧКИ / БЛОКИ ====== */
@@ -78,13 +114,8 @@ body {
 
 /* ====== КНОПКИ ====== */
 button {
-  background: linear-gradient(
-    135deg,
-    var(--accent),
-    #ff96c7
-  );
-
-  color: white;
+   background: var(--btn-bg);
+  color: var(--btn-text);
 
   border: none;
 
@@ -103,11 +134,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(
-    135deg,
-    var(--accent-hover),
-    #ff5ca8
-  );
+  background: var(--btn-hover-bg);
 
   transform: translateY(-2px);
 
@@ -117,7 +144,10 @@ button:hover {
 button:active {
   transform: scale(0.98);
 }
-
+.btn-book {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+}
 /* ====== INPUT ====== */
 input,
 select,

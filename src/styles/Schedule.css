@@ -4,7 +4,7 @@
 
 .schedule-page h1 {
   margin-bottom: 30px;
-  color: #ff4fa3;
+  color: var(--text-main);
 }
 
 .schedule-grid {

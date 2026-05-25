@@ -14,44 +14,25 @@
 .hero::before,
 .hero2::before {
   content: "";
-
   position: absolute;
   inset: 0;
-
-  background:
-    radial-gradient(circle at top left,
-      rgba(255, 79, 163, 0.18),
-      transparent 35%),
-
-    radial-gradient(circle at bottom right,
-      rgba(255, 182, 213, 0.22),
-      transparent 40%);
-
   z-index: 0;
 }
-
 /* ===== HERO CONTENT ===== */
-
 .hero > *,
 .hero2 > * {
   position: relative;
   z-index: 1;
 }
-
 /* ===== TITLES ===== */
 
 .hero h1,
 .hero2 h1 {
   font-size: 64px;
-
   font-weight: 800;
-
   line-height: 1.1;
-
   margin-bottom: 24px;
-
-  color: #2b1d26;
-
+  color: var(--nav-text);
   letter-spacing: -2px;
 }
 
@@ -60,14 +41,10 @@
 .hero p,
 .hero2 p {
   max-width: 760px;
-
   margin: 0 auto 36px;
-
   font-size: 20px;
-
   line-height: 1.8;
-
-  color: #6e5a66;
+  color: var(--nav-text);
 }
 
 /* ===== HERO BUTTON ===== */
@@ -75,70 +52,42 @@
 .hero button,
 .hero2 button {
   font-size: 17px;
-
   padding: 14px 28px;
-
-  border-radius: 18px;
-
+  border-radius: 24px;
   border: none;
-
-  background: linear-gradient(
-    135deg,
-    #ff4fa3,
-    #ff8ec6
-  );
-
-  color: white;
-
+  background: var(--btn-bg);
+  color: var(--btn-text);
   font-weight: 600;
-
   cursor: pointer;
-
   transition: 0.3s ease;
-
   box-shadow:
-    0 10px 25px rgba(255, 79, 163, 0.25);
+    0 8px 20px rgba(255, 79, 163, 0.25);
 }
 
 .hero button:hover,
 .hero2 button:hover {
   transform: translateY(-3px);
-
   box-shadow:
-    0 16px 35px rgba(255, 79, 163, 0.35);
-
-  background: linear-gradient(
-    135deg,
-    #e63e90,
-    #ff70b3
-  );
+    0 8px 15px rgba(255, 79, 163, 0.35);
+  background: var(--btn-hover-bg);
 }
 
 /* ===== STATIC TEXT ===== */
 
 .static {
   font-size: 58px;
-
   font-family: "Inter", sans-serif;
-
   font-weight: 800;
-
-  color: #2b1d26;
-
+  color: var(--nav-text);
   letter-spacing: -2px;
 }
-
 /* ===== TYPING TEXT ===== */
 
 .dynamic {
   display: inline-block;
-
   font-size: 64px;
-
   font-family: "Playfair Display", serif;
-
   font-weight: 700;
-
   background: linear-gradient(
     135deg,
     #ff4fa3,
@@ -148,14 +97,10 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
   overflow: hidden;
   white-space: nowrap;
-
   border-right: 3px solid #ff4fa3;
-
   padding-right: 6px;
-
   animation: blinkCursor 0.8s infinite;
 }
 
@@ -175,14 +120,12 @@
   .hero2 {
     padding: 70px 20px;
   }
-
   .hero h1,
   .hero2 h1,
   .dynamic,
   .static {
     font-size: 42px;
   }
-
   .hero p,
   .hero2 p {
     font-size: 17px;

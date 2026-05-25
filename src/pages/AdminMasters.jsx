@@ -168,19 +168,18 @@ export default function AdminMasters() {
           variant="contained"
           onClick={() => setAddOpen(true)}
           sx={{
-              px: 3,
-              py: 1.2,
-              borderRadius: "14px",
-              fontWeight: 700,
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-              },
-            }}
+            },
+          }}
         >
           Добавить мастера
         </Button>
@@ -286,15 +285,18 @@ export default function AdminMasters() {
                         variant="contained"
                         onClick={() => handleEdit(m)}
                         sx={{
-                          background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-                          fontWeight: 600,
-                          textTransform: "none",
-                          borderRadius: "10px",
-
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                          },
-                        }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
                     >
                       Редактировать
                     </Button>
@@ -305,15 +307,18 @@ export default function AdminMasters() {
                       color="error"
                       onClick={() => deleteMaster(m.id_mastera)}
                       sx={{
-                          background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
-                          fontWeight: 600,
-                          textTransform: "none",
-                          borderRadius: "10px",
-
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                          },
-                        }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
                     >
                       Удалить
                     </Button>
@@ -350,34 +355,18 @@ export default function AdminMasters() {
 
         <DialogActions>
           <Button onClick={() => setAddOpen(false)}sx={{
-            
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
             Отмена
           </Button>
 
@@ -385,34 +374,18 @@ export default function AdminMasters() {
             variant="contained"
             onClick={createMaster}
             sx={{
-              
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+            },
+          }}
             >
             Добавить
           </Button>
@@ -436,34 +409,18 @@ export default function AdminMasters() {
 
         <DialogActions>
           <Button onClick={() => setEditOpen(false)} sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
             Отмена
           </Button>
 
@@ -471,26 +428,18 @@ export default function AdminMasters() {
             variant="contained"
             onClick={handleSave}
             sx={{
-              mt: 1,
-              flex: 1,
-              py: 1.5,
-              borderRadius: "14px",
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              transition: "0.25s ease",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+            },
+          }}
           >
             Сохранить
           </Button>

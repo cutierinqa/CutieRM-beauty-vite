@@ -143,7 +143,9 @@ class Zapisi(Base):
     platyzhi = relationship(
     "Platyzhi",
     back_populates="zapis",
-    cascade="all, delete"
+    cascade="all, delete",
+
+    
 )
     
 class ProgrammaLoyalnosti(Base):

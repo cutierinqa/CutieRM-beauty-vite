@@ -49,32 +49,32 @@ export default function Login() {
   },
 
   "& .MuiInputLabel-root": {
-    color: "#6e5a66",
+    color: "var(--text-main)",
   },
 
   "& .MuiOutlinedInput-root": {
-    backgroundColor: "rgba(255,255,255,0.7)",
+    backgroundColor: "var( --card-bg)",
 
     borderRadius: "14px",
 
     transition: "0.25s ease",
 
     "& fieldset": {
-      borderColor: "rgba(255, 79, 163, 0.2)",
+      borderColor: "var(--accent2)",
     },
 
     "&:hover fieldset": {
-      borderColor: "rgba(255, 79, 163, 0.5)",
+      borderColor: "var(--accent2)",
     },
 
     "&.Mui-focused fieldset": {
-      borderColor: "#ff4fa3",
+      borderColor: "var(--accent2)",
       boxShadow: "0 0 0 4px rgba(255,79,163,0.15)",
     },
   },
 
   "& .MuiSvgIcon-root": {
-    color: "#ff4fa3",
+    color: "var(--accent2)",
   },
 };
 
@@ -126,16 +126,16 @@ export default function Login() {
             fontSize: "16px",
             fontWeight: "bold",
             borderRadius: "14px",
-            color: "#ff4fa3",
-            border: "2px solid #ff4fa3",
-            background: "#fff0f7",
-            borderColor: "#e63e90",
+            color: "var(--accent2)",
+            border: "2px solid var(--accent2)",
+            background: "var(--bg-main)",
+            borderColor: "var(--accent-hover)",
             boxShadow:
             "0 10px 25px rgba(255,79,163,0.25)",
             "&:hover": {
-            borderColor: "#e63e90",
+            borderColor: "var(--accent-hover)",
             color: "white",
-            background: "#ff4fa3",
+            background: "var(--accent)",
             boxShadow:
             "0 10px 25px rgba(255,79,163,0.25)",
             }}}
@@ -164,18 +164,18 @@ export default function Login() {
       fontWeight: 700,
       borderRadius: "14px",
 
-      border: "2px solid #ff4fa3",
-      color: "#ff4fa3",
-      background: "#fff0f7",
+      border: "2px solid var(--accent2)",
+      color: "var(--accent2)",
+      background: "var(--bg-main)",
 
       boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
 
       textTransform: "none",
 
       "&:hover": {
-        borderColor: "#e63e90",
+        borderColor: "var(--accent-hover)",
         color: "white",
-        background: "#ff4fa3",
+        background: "var(--accent)",
         boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
       },
     }}
@@ -194,18 +194,18 @@ export default function Login() {
       fontWeight: 700,
       borderRadius: "14px",
 
-      border: "2px solid #ff4fa3",
-      color: "#ff4fa3",
-      background: "#fff0f7",
+      border: "2px solid var(--accent2)",
+      color: "var(--accent2)",
+      background: "var(--bg-main)",
 
       boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
 
       textTransform: "none",
 
       "&:hover": {
-        borderColor: "#e63e90",
+        borderColor: "var(--accent-hover)",
         color: "white",
-        background: "#ff4fa3",
+        background: "var(--accent)",
         boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
       },
     }}
@@ -223,7 +223,7 @@ export default function Login() {
       left: "50%",
       transform: "translate(-50%, -50%)",
       width: 380,
-      bgcolor: "rgba(255,255,255,0.9)",
+      bgcolor: "var(--bg-main)",
       backdropFilter: "blur(16px)",
       boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
       p: 4,
@@ -259,7 +259,7 @@ export default function Login() {
 
             width: 420,
 
-            bgcolor: "rgba(255,255,255,0.85)",
+            bgcolor: "var(--bg-main)",
             backdropFilter: "blur(16px)",
 
             boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
@@ -394,16 +394,16 @@ function RegisterForm({ onClose }) {
             fontSize: "16px",
                 fontWeight: "bold",
                 borderRadius: "14px",
-                color: "#ff4fa3",
-                border: "2px solid #ff4fa3",
-                background: "#fff0f7",
-                borderColor: "#e63e90",
+                color: "var(--accent)",
+                border: "2px solid var(--accent)",
+                background: "var(--bg-main)",
+                borderColor: "var(--accent-hover)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
                 "&:hover": {
-                borderColor: "#e63e90",
+                borderColor: "var(--accent-hover)",
                 color: "white",
-                background: "#ff4fa3",
+                background: "var(--accent)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
               }
@@ -424,16 +424,16 @@ function RegisterForm({ onClose }) {
               fontSize: "16px",
                 fontWeight: "bold",
                 borderRadius: "14px",
-                color: "#ff4fa3",
-                background: "#fff0f7",
-                borderColor: "#e63e90",
-                border: "2px solid #ff4fa3",
+                color: "var(--accent)",
+                background: "var(--bg-main)",
+                borderColor: "var(--accent-hover)",
+                border: "2px solid var(--accent)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
                 "&:hover": {
-                borderColor: "#e63e90",
+                borderColor: "var(--accent-hover)",
                 color: "white",
-                background: "#ff4fa3",
+                background: "var(--accent)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
               }
@@ -482,16 +482,16 @@ function ForgotPasswordForm({ onClose }) {
                 fontSize: "16px",
                 fontWeight: "bold",
                 borderRadius: "14px",
-                color: "#ff4fa3",
-                background: "#fff0f7",
-                border: "2px solid #ff4fa3",
-                borderColor: "#e63e90",
+                color: "var(--accent)",
+                background: "var(--bg-main)",
+                border: "2px solid var(--accent)",
+                borderColor: "var(--accent-hover)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
                 "&:hover": {
-                borderColor: "#e63e90",
+                borderColor: "var(--accent-hover)",
                 color: "white",
-                background: "#ff4fa3",
+                background: "var(--accent)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
               }}}
@@ -509,16 +509,16 @@ function ForgotPasswordForm({ onClose }) {
                 fontSize: "16px",
                 fontWeight: "bold",
                 borderRadius: "14px",
-                color: "#ff4fa3",
-                background: "#fff0f7",
-                border: "2px solid #ff4fa3",
-                borderColor: "#e63e90",
+                color: "var(--accent)",
+                background: "var(--bg-main)",
+                border: "2px solid var(--accent)",
+                borderColor: "var(--accent-hover)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
                 "&:hover": {
-                borderColor: "#e63e90",
+                borderColor: "var(--accent-hover)",
                 color: "white",
-                background: "#ff4fa3",
+                background: "var(--accent)",
                 boxShadow:
                 "0 10px 25px rgba(255,79,163,0.25)",
               }}}

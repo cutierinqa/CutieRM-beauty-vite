@@ -175,7 +175,7 @@ const INCIDENT_TYPES = [
       px: 2,
       py: 5,
       background:
-        "linear-gradient(135deg, #fff7fb, #ffeef6)",
+        "var(--gradient-bg)",
       position: "relative",
     }}
   >
@@ -255,7 +255,7 @@ const INCIDENT_TYPES = [
 
             background:
               tab === "upcoming"
-                ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
+                ? "var(--gradient-bg)"
                 : "transparent",
 
             color:
@@ -287,7 +287,7 @@ const INCIDENT_TYPES = [
 
             background:
               tab === "past"
-                ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
+                ? "var(--gradient-bg)"
                 : "transparent",
 
             color:
@@ -333,7 +333,7 @@ const INCIDENT_TYPES = [
           align="center"
           sx={{
             fontWeight: 800,
-            color: "#2b1d26",
+            color: "var(--accent)",
             mb: 4,
             letterSpacing: "-1px",
           }}
@@ -346,7 +346,7 @@ const INCIDENT_TYPES = [
             align="center"
             sx={{
               py: 6,
-              color: "#777",
+              color: "var(--text-secondary)",
               fontSize: "18px",
               fontWeight: 500,
             }}

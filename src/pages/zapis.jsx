@@ -181,29 +181,29 @@ export default function Contacts() {
 
   const fieldStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#2b1d26",
-      backgroundColor: "rgba(255,255,255,0.7)",
+      color: "var(--text-primary)",
+      backgroundColor: "var(--bg-secondary)",
       borderRadius: "14px",
       transition: "0.25s ease",
       "& fieldset": {
-        borderColor: "rgba(255, 79, 163, 0.2)",
+        borderColor: "var(--border-default)",
         
       },
       "&:hover fieldset": {
-        borderColor: "rgba(255, 79, 163, 0.5)",
+        borderColor: "var(--border-hover)",
         color: "white",
       },
       "&.Mui-focused fieldset": {
-        borderColor: "#ff4fa3",
+        borderColor: "var(--accent)",
         
         boxShadow: "0 0 0 4px rgba(255,79,163,0.15)",
       },
     },
     "& .MuiInputLabel-root": {
-      color: "#6e5a66",
+      color: "var(--text-secondary)",
     },
     "& .MuiSvgIcon-root": {
-      color: "#ff4fa3",
+      color: "var(--accent)",
     },
   };
 
@@ -216,7 +216,7 @@ export default function Contacts() {
           justifyContent: "center",
           alignItems: "center",
           px: 2,
-          background: "linear-gradient(135deg, #fff7fb, #ffeef6)",
+          background: "var(--bg-main)",
         }}
       >
         <Paper
@@ -226,11 +226,11 @@ export default function Contacts() {
             maxWidth: 550,
             borderRadius: 5,
             p: 5,
-            background: "rgba(255,255,255,0.7)",
+            background: "var(--bg-secondary)",
             backdropFilter: "blur(16px)",
-            border: "1px solid rgba(255,79,163,0.15)",
-            boxShadow: "0 15px 40px rgba(255,79,163,0.12)",
-            color: "#2b1d26",
+            border: "1px solid var(--border)",
+            boxShadow: "0 15px 40px var(--shadow)",
+            color: "var(--accent2)",
           }}
         >
           <Typography
@@ -304,15 +304,15 @@ export default function Contacts() {
                 marginBottom: "2 px",
                 padding: "12px",
                 borderRadius: "12px",
-                background: "#fff0f7",
-                color: "#ff4fa3",
+                background: "var(--bg-secondary)",
+                color: "var(--text-main:)",
                 fontWeight: 700,
               }}>
                 <div>Мастер: {selectedMaster}</div>
-                <div style={{ color: "#2b1d26", marginTop: "4px" }}>
+                <div style={{ color: "var(--text-primary)", marginTop: "4px" }}>
                   {selectedDolzhnost}
                 </div>
-                <div style={{ color: "#777", marginTop: "2px" }}>
+                <div style={{ color: "var(--text-muted)", marginTop: "2px" }}>
                   {selectedRole ?? ""}
                 </div>
               </div>
@@ -324,14 +324,13 @@ export default function Contacts() {
   sx={{
     padding: "15px",
     borderRadius: "14px",
-    
     fontWeight: 700,
     textAlign: "center",
     border: "1px solid transparent",
     transition: "0.2s ease",
-    borderColor: "#e63e90",
-      color: "#ff4fa3",
-      background: "#fff0f7",
+    borderColor: "var(--border-hover)",
+      color: "var(--text-main)",
+      background: "var(--bg-secondary)",
   }}
 >
   Выбранное время: {form.data} | {form.vremya}
@@ -347,10 +346,10 @@ export default function Contacts() {
                 py: 1.7,
                 fontSize: "16px",
                 fontWeight: "bold",
-                borderRadius: "14px",
-                color: "#ff4fa3",
-                background: "#fff0f7",
-                borderColor: "#e63e90",
+                borderRadius: "20px",
+                color: "var(--text-main)",
+                background: "var(--btn-bg)",
+                borderColor: "var(--border-hover)",
               }}
             >
               Записаться

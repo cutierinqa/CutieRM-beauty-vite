@@ -59,7 +59,7 @@ export default function SchedulePage() {
     <div
       style={{
         padding: "40px",
-        background: "#fff7fb",
+        background: "var(--bg-main)",
         minHeight: "100vh",
         fontFamily: "Inter, sans-serif",
       }}
@@ -144,7 +144,7 @@ export default function SchedulePage() {
             <div
               key={master.id_mastera}
               style={{
-                background: "white",
+                background: "var(--card-bg)",
                 borderRadius: "24px",
                 padding: "24px",
 
@@ -178,7 +178,7 @@ export default function SchedulePage() {
                     style={{
                       fontSize: "22px",
                       fontWeight: "700",
-                      color: "#2b1d26",
+                      color: "var(--text-main)",
                     }}
                   >
                     {master.fio}
@@ -186,7 +186,7 @@ export default function SchedulePage() {
 
                   <div
                     style={{
-                      color: "#777",
+                      color: "var(--text-secondary)",
                     }}
                   >
                     {master.dolzhnost}
@@ -194,7 +194,7 @@ export default function SchedulePage() {
                   
                   <div
                     style={{
-                      color: "#949494",
+                      color: "var(--text-tertiary)",
                     }}
                   >
                     {master.kvalifikaciya}

@@ -109,7 +109,7 @@ export default function Settings() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: `linear-gradient(135deg, #fff7fb, #ffeef6)`,
+        background: "var(--bg-main)",
         px: 2,
       }}
     >

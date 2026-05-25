@@ -23,6 +23,7 @@ import Admin from "./pages/admin";
 import Lk from "./pages/Lk";
 import MasterLk from "./pages/masterlk";
 import Settings from "./pages/Settings";
+import MasterSchedule from "./pages/MasterSchedule";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -77,6 +78,7 @@ function App() {
         <Route path="/admin/zapisi" element={<AdminZapisi />} />
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/uslugi" element={<AdminUslugi />} />
+        <Route path="/master/schedule" element={<MasterSchedule />} />
       </Routes>
     </>
   );
