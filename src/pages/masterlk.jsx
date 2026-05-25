@@ -198,7 +198,7 @@ export default function LkMaster() {
           <Button
             startIcon={<ScheduleIcon />}
             variant="contained"
-            onClick={() => navigate("/master/raspisanie")}
+            onClick={() => navigate("/schedule")}
             sx={{
               py: 1.5,
               borderRadius: "14px",

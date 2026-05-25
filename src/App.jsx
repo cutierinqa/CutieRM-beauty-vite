@@ -14,7 +14,7 @@ import Login from "./pages/Login";
 import History from "./pages/History";
 import Loyalty from "./pages/Loyalty";
 import Zapis from "./pages/zapis";
-
+import AdminUslugi from "./pages/AdminUslugi";
 import AdminMasters from "./pages/AdminMasters";
 import AdminClients from "./pages/AdminClients";
 import AdminZapisi from "./pages/AdminZapisi";
@@ -22,6 +22,7 @@ import AdminUsers from "./pages/AdminUsers";
 import Admin from "./pages/admin";
 import Lk from "./pages/Lk";
 import MasterLk from "./pages/masterlk";
+import Settings from "./pages/Settings";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -30,11 +31,8 @@ function App() {
     <>
       <Helmet>
         <title >NOVA</title>
-        
       </Helmet>
-
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/about" element={<About />} />
@@ -44,6 +42,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/history" element={<History />} />
         <Route path="/loyalty" element={<Loyalty />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/zapis" element={<Zapis />} />
 
         <Route
@@ -77,6 +76,7 @@ function App() {
         <Route path="/admin/clients" element={<AdminClients />} />
         <Route path="/admin/zapisi" element={<AdminZapisi />} />
         <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/uslugi" element={<AdminUslugi />} />
       </Routes>
     </>
   );

@@ -63,15 +63,15 @@ export default function Contacts() {
   };
 
   const handleSelectShift = (shift) => {
-    setSelectedShift(shift);
+  setSelectedShift(shift);
 
-    setForm({
-        id_mastera: parsed.id_mastera || "",
-        id_uslugi: "",
-        data: parsed.data || "",
-        vremya: parsed.vremya || "",
-      });
-  };
+  setForm({
+    id_mastera: shift.id_mastera || "",
+    id_uslugi: "",
+    data: shift.data || "",
+    vremya: shift.vremya || "",
+  });
+};
 
   useEffect(() => {
     const slot = localStorage.getItem("selectedSlot");
@@ -89,6 +89,7 @@ export default function Contacts() {
       setSelectedMaster(parsed.fio_mastera);
       setSelectedDolzhnost(parsed.dolzhnost);
       setSelectedRole(parsed.kvalifikaciya);
+      localStorage.removeItem("selectedSlot");
     }
   }, []);
 
@@ -117,16 +118,23 @@ export default function Contacts() {
   }, [selectedRole, selectedMainService, allMasters]);
 
   const handleCreateRecord = async () => {
-    try {
-      if (!form.id_uslugi) {
-        alert("Выберите услугу");
-        return;
-      }
 
-      if (!form.id_mastera || !form.data || !form.vremya) {
-        alert("Сначала выберите окно записи");
-        return;
-      }
+  // 🔥 ПРОВЕРКА АВТОРИЗАЦИИ
+  if (!token) {
+    setOpenAuthModal(true);
+    return;
+  }
+
+  try {
+    if (!form.id_uslugi) {
+      alert("Выберите услугу");
+      return;
+    }
+
+    if (!form.id_mastera || !form.data || !form.vremya) {
+      alert("Сначала выберите окно записи");
+      return;
+    }
 
       await axios.post(
         "/admin/records",
@@ -143,9 +151,11 @@ export default function Contacts() {
           },
         }
       );
+      
 
       alert("Вы успешно записались ❤️");
 
+      // 🔥 1. очищаем form
       setForm({
         id_mastera: "",
         id_uslugi: "",
@@ -153,8 +163,16 @@ export default function Contacts() {
         vremya: "",
       });
 
+      // 🔥 2. очищаем UI состояния
       setSelectedMainService("");
       setExtraSelected([]);
+      setSelectedMaster("");
+      setSelectedDolzhnost("");
+      setSelectedRole("");
+      setSelectedShift(null);
+
+      // 🔥 3. очищаем localStorage (ВАЖНО!)
+      localStorage.removeItem("selectedSlot");
     } catch (err) {
       console.log(err);
       alert("Ошибка при создании записи");
@@ -239,7 +257,7 @@ export default function Contacts() {
 
               setSelectedMainService(val);
 
-              setForm((prev) => ({
+              setForm((prev) => ({ 
                 ...prev,
                 id_uslugi: val,
               }));

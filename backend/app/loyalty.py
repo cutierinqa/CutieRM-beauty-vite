@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.models import Klient, ProgrammaLoyalnosti, User
+from app.models import Klient, Platyzhi, ProgrammaLoyalnosti, User, Usluga, Zapisi
 from app.auth_utils import get_current_user
 
 router = APIRouter(prefix="/loyalty", tags=["Loyalty"])
@@ -35,3 +35,47 @@ def get_loyalty(
         "balans_bonysov": card.balans_bonysov,
         "status": card.status
     }
+@router.get("/history")
+def loyalty_history(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    klient = db.query(Klient).filter(
+        Klient.id_user == current_user.id_user
+    ).first()
+
+    payments = (
+        db.query(Platyzhi, Zapisi, Usluga)
+        .join(
+            Zapisi,
+            Platyzhi.id_zapisi == Zapisi.id_zapisi
+        )
+        .join(
+            Usluga,
+            Zapisi.id_uslugi == Usluga.id_uslugi
+        )
+        .filter(
+            Zapisi.id_klienta == klient.id_klienta
+        )
+        .order_by(
+            Platyzhi.data_platyzha.desc()
+        )
+        .all()
+    )
+
+    result = []
+
+    for payment, zapis, usluga in payments:
+
+        result.append({
+            "id": payment.id_platyzha,
+            "usluga": usluga.nazvanie,
+            "summa": float(payment.summa_fact),
+            "bonus": float(
+                payment.nachisleno_bonusov or 0
+            ),
+            "date": payment.data_platyzha
+        })
+
+    return result

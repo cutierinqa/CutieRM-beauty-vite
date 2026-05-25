@@ -11,22 +11,77 @@ import {
   TableHead,
   TableRow,
   CircularProgress,
+   Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  MenuItem,
+  Rating,
+  Stack,
   IconButton
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from "../api/axios";
-
 export default function History() {
   const [history, setHistory] = useState({
   past: [],
   upcoming: [],
 });
-
-const [tab, setTab] = useState("upcoming");
+const INCIDENT_TYPES = [
+  "жалоба",
+  "аллергия",
+  "повреждение",
+  "травма",
+  "прочее",
+];
+ 
+  const [tab, setTab] = useState("upcoming");
   const [loading, setLoading] = useState(true);
+  const [extraServices, setExtraServices] = useState([]);
   const navigate = useNavigate();
-
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [viewMode, setViewMode] = useState(false);
+  const [incidentOpen, setIncidentOpen] = useState(false);
+  const [incidentText, setIncidentText] = useState("");
+  const [incidentType, setIncidentType] = useState("жалоба");
+  const [incidentRecord, setIncidentRecord] = useState(null);
+ 
   useEffect(() => {
+    const fetchExtra = async () => {
+      try {
+        const res = await axios.get("/admin/uslugi-extra");
+        setExtraServices(res.data || []);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchExtra();
+  }, []);
+
+    const parseExtra = (extra) => {
+  if (!extra) return [];
+
+  if (Array.isArray(extra)) {
+    return extra.map(Number);
+  }
+
+  try {
+    return JSON.parse(extra).map(Number);
+  } catch {
+    return String(extra)
+      .split(",")
+      .map(s => Number(s.trim()))
+      .filter(Boolean);
+  }
+};
+
+   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -38,8 +93,6 @@ const [tab, setTab] = useState("upcoming");
         const res = await axios.get("/history/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        console.log(res.data);
 
         setHistory({
           past: res.data.past || [],
@@ -63,6 +116,7 @@ const [tab, setTab] = useState("upcoming");
       </Box>
     );
   }
+  
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -77,6 +131,39 @@ const [tab, setTab] = useState("upcoming");
   tab === "upcoming"
     ? (history?.upcoming || [])
     : (history?.past || []);
+
+    const submitReview = async () => {
+  try {
+
+    const token = localStorage.getItem("token");
+
+    await axios.post(
+      "/history/review",
+      {
+        id_zapisi: selectedRecord.id_zapisi,
+        ocenka: reviewRating,
+        tekst_otzyva: reviewText
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    setReviewOpen(false);
+
+    setReviewText("");
+
+    setReviewRating(5);
+
+    alert("Отзыв отправлен ❤️");
+
+  } catch (err) {
+    console.log(err);
+    alert("Ошибка");
+  }
+};
 
   return (
   <Box
@@ -276,6 +363,7 @@ const [tab, setTab] = useState("upcoming");
                   "Мастер",
                   "Услуга",
                   "Доп услуги",
+                  "Отзыв",
                 ].map((head) => (
                   <TableCell
                     key={head}
@@ -297,6 +385,7 @@ const [tab, setTab] = useState("upcoming");
 
             <TableBody>
               {currentList.map((item) => (
+                
                 <TableRow
                   key={item.id_zapisi}
                   hover
@@ -326,8 +415,132 @@ const [tab, setTab] = useState("upcoming");
                   </TableCell>
 
                   <TableCell>
-                    {item.dop_uslugi || "—"}
-                  </TableCell>
+                {parseExtra(item.extra_uslugi).length
+                  ? extraServices
+                      .filter(u =>
+                        parseExtra(item.extra_uslugi).includes(Number(u.id))
+                      )
+                      .map(u => u.name)
+                      .join(", ")
+                  : "—"}
+              </TableCell>
+              <TableCell>
+  <Stack
+    spacing={1}
+    alignItems="center"
+    justifyContent="center"
+  >
+    {/* ОТЗЫВ (только прошедшие) */}
+    {tab === "past" && (
+      item.has_review ? (
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setSelectedRecord(item);
+            setReviewRating(item.review.ocenka);
+            setReviewText(item.review.tekst_otzyva);
+            setViewMode(true);
+            setReviewOpen(true);
+          }}
+          sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+        >
+          Мой отзыв
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            setSelectedRecord(item);
+            setReviewText("");
+            setReviewRating(5);
+            setViewMode(false);
+            setReviewOpen(true);
+          }}
+          sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+        >
+          Оставить отзыв
+        </Button>
+      )
+    )}
+
+    {/* ЖАЛОБА (только прошедшие) */}
+{tab === "past" && (
+  item.has_incident ? (
+    <Button
+      variant="outlined"
+      onClick={() => {
+        setIncidentRecord(item);
+        setIncidentType(item.incident.tip_incidenta);
+        setIncidentText(item.incident.opisanie);
+        setIncidentOpen(true);
+      }}
+      sx={{
+        borderRadius: "16px",
+        fontWeight: 700,
+        fontSize: "13px",
+        textTransform: "none",
+        border: "2px solid #ff4fa3",
+        color: "#ff4fa3",
+        background: "#fff",
+        "&:hover": {
+          background: "#ff4fa3",
+          color: "#fff",
+        },
+      }}
+    >
+      Моя жалоба
+    </Button>
+  ) : (
+    <Button
+      onClick={() => {
+        setIncidentRecord(item);
+        setIncidentType("жалоба");
+        setIncidentText("");
+        setIncidentOpen(true);
+      }}
+      sx={{
+        borderRadius: "16px",
+        fontWeight: 700,
+        fontSize: "13px",
+        textTransform: "none",
+        border: "2px solid #ff4fa3",
+        color: "#ff4fa3",
+        background: "#fff",
+        "&:hover": {
+          background: "#ff4fa3",
+          color: "#fff",
+        },
+      }}
+    >
+      Пожаловаться 🚨
+    </Button>
+  )
+)}
+  </Stack>
+</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -335,6 +548,218 @@ const [tab, setTab] = useState("upcoming");
         )}
       </TableContainer>
     </Box>
+          <Dialog
+        open={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+        sx: {
+          borderRadius: "22px",
+          p: 2,
+          background: "rgba(255,255,255,0.85)",
+          backdropFilter: "blur(18px)",
+          border: "1px solid rgba(255,79,163,0.15)",
+          boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+        },
+      }}
+      >
+        <DialogTitle>
+        {viewMode
+          ? "Ваш отзыв"
+          : "Оставить отзыв"}
+      </DialogTitle>
+
+        <DialogContent>
+  <Stack spacing={2} sx={{ mt: 1 }}>
+
+    <Box sx={{ textAlign: "center" }}>
+      <Rating
+        value={reviewRating}
+        readOnly={viewMode}
+        onChange={(e, newValue) => setReviewRating(newValue)}
+        size="large"
+      />
+    </Box>
+
+    <TextField
+      fullWidth
+      multiline
+      rows={4}
+      label="Ваш отзыв"
+      value={reviewText}
+      disabled={viewMode}
+      onChange={(e) => setReviewText(e.target.value)}
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.7)",
+        },
+      }}
+    />
+
+  </Stack>
+</DialogContent>
+
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+  <Button
+    onClick={() => setReviewOpen(false)}
+    sx={{
+      borderRadius: "14px",
+      px: 3,
+      fontWeight: 700,
+      color: "#ff4fa3",
+      border: "2px solid #ff4fa3",
+      background: "#fff",
+      "&:hover": {
+        background: "#ff4fa3",
+        color: "#fff",
+      },
+    }}
+  >
+    Закрыть
+  </Button>
+
+  {!viewMode && (
+    <Button
+      onClick={submitReview}
+      sx={{
+        borderRadius: "14px",
+        px: 3,
+        fontWeight: 700,
+        color: "#fff",
+        background: "linear-gradient(135deg,#ff4fa3,#ff8ec6)",
+        boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+        "&:hover": {
+          transform: "translateY(-2px)",
+        },
+      }}
+    >
+      Отправить
+    </Button>
+  )}
+</DialogActions>
+      </Dialog>
+      <Dialog
+  open={incidentOpen}
+  onClose={() => setIncidentOpen(false)}
+  fullWidth
+  maxWidth="sm"
+  PaperProps={{
+  sx: {
+    borderRadius: "22px",
+    p: 2,
+    background: "rgba(255,255,255,0.85)",
+    backdropFilter: "blur(18px)",
+    border: "1px solid rgba(255,79,163,0.15)",
+    boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+  },
+}}
+>
+  <DialogTitle>Жалоба на инцидент</DialogTitle>
+
+  <DialogContent>
+  <Stack spacing={2} sx={{ mt: 1 }}>
+
+    <TextField
+      select
+      fullWidth
+      label="Тип проблемы"
+      value={incidentType}
+      onChange={(e) => setIncidentType(e.target.value)}
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.7)",
+        },
+      }}
+    >
+      {INCIDENT_TYPES.map((t) => (
+        <MenuItem key={t} value={t}>
+          {t}
+        </MenuItem>
+      ))}
+    </TextField>
+
+    <TextField
+      fullWidth
+      multiline
+      rows={4}
+      label="Описание"
+      value={incidentText}
+      onChange={(e) => setIncidentText(e.target.value)}
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.7)",
+        },
+      }}
+    />
+
+  </Stack>
+</DialogContent>
+
+  <DialogActions sx={{ px: 3, pb: 2 }}>
+  <Button
+    onClick={() => setIncidentOpen(false)}
+    sx={{
+      borderRadius: "14px",
+      px: 3,
+      fontWeight: 700,
+      color: "#ff4fa3",
+      border: "2px solid #ff4fa3",
+      background: "#fff",
+      "&:hover": {
+        background: "#ff4fa3",
+        color: "#fff",
+      },
+    }}
+  >
+    Отмена
+  </Button>
+
+  <Button
+    onClick={async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        await axios.post(
+          "/history/incident",
+          {
+            id_zapisi: incidentRecord.id_zapisi,
+            tip_incidenta: incidentType,
+            opisanie: incidentText,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setIncidentOpen(false);
+        setIncidentText("");
+        alert("Жалоба отправлена 🚨");
+      } catch (err) {
+        console.log(err);
+        alert("Ошибка");
+      }
+    }}
+    sx={{
+      borderRadius: "14px",
+      px: 3,
+      fontWeight: 700,
+      color: "#fff",
+      background: "linear-gradient(135deg,#ff4fa3,#ff8ec6)",
+      boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+      "&:hover": {
+        transform: "translateY(-2px)",
+      },
+    }}
+  >
+    Отправить
+  </Button>
+</DialogActions>
+</Dialog>
   </Box>
   );
+  
 }

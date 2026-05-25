@@ -45,7 +45,12 @@ export default function SchedulePage() {
     id_shift: shift.id_shift,
   };
 
-  localStorage.setItem("selectedSlot", JSON.stringify(slot));
+    setSelectedSlot(slot);
+
+  localStorage.setItem(
+    "selectedSlot",
+    JSON.stringify(slot)
+  );
 
   navigate("/zapis");
 };
@@ -209,7 +214,11 @@ export default function SchedulePage() {
                   shifts.map((shift) => (
                     <div
                       key={shift.id_shift}
-                      onClick={() => handleSlotClick(master, shift)}
+                      onClick={() => {
+                        if (!shift.is_booked) {
+                          handleSlotClick(master, shift);
+                        }
+                      }}
                       style={{
                         padding: "14px 18px",
                         borderRadius: "16px",
@@ -217,37 +226,66 @@ export default function SchedulePage() {
                         userSelect: "none",
 
                         background:
-                          selectedSlot?.id_shift === shift.id_shift
-                            ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
-                            : "#fff",
+                        shift.is_booked
+                          ? "#f3f3f3"
+                          : selectedSlot?.id_shift === shift.id_shift
+                          ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
+                          : "#fff",
 
                         border:
-                          selectedSlot?.id_shift === shift.id_shift
-                            ? "none"
-                            : "2px solid #ffb6d5",
+                        shift.is_booked
+                          ? "2px dashed #d0d0d0"
+                          : selectedSlot?.id_shift === shift.id_shift
+                          ? "none"
+                          : "2px solid #ffb6d5",
 
                         color:
-                          selectedSlot?.id_shift === shift.id_shift
-                            ? "white"
-                            : "#ff4fa3",
+                        shift.is_booked
+                          ? "#999"
+                          : selectedSlot?.id_shift === shift.id_shift
+                          ? "white"
+                          : "#ff4fa3",
 
                         minWidth: "150px",
                         transition: "0.2s ease",
 
+                        cursor: shift.is_booked
+                        ? "not-allowed"
+                        : "pointer",
+                        opacity: shift.is_booked ? 0.7 : 1,
                         boxShadow:
                           selectedSlot?.id_shift === shift.id_shift
                             ? "0 10px 25px rgba(255,79,163,0.25)"
                             : "0 5px 12px rgba(0,0,0,0.05)",
                       }}
                     >
-                      <div style={{ fontWeight: 700 }}>
+                      <div
+                        style={{
+                          fontWeight: 700,
+
+                          textDecoration:
+                            shift.is_booked
+                              ? "line-through"
+                              : "none",
+                        }}
+                      >
                         {shift.vremya_nachala.slice(0, 5)} —{" "}
                         {shift.vremya_okonchaniya.slice(0, 5)}
                       </div>
+                      {shift.is_booked && (
+                        <div
+                          style={{
+                            marginTop: "6px",
+                            fontSize: "12px",
+                            fontWeight: 700,
+                            color: "#999",
+                          }}
+                        >
+                          Забронировано
+                        </div>
+                      )}
 
-                      <div style={{ fontSize: "13px", opacity: 0.85 }}>
-                        {shift.tip_smeny}
-                      </div>
+                      
                     </div>
                   ))
                 ) : (

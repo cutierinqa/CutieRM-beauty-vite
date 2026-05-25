@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Table, Integer, String, Date, DateTime, ForeignKey, Float, Time, Text
+from sqlalchemy import DECIMAL, Column, Enum, Table, Integer, String, Date, DateTime, ForeignKey, Float, Time, Text
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime
+
 
 class Role(Base):
     __tablename__ = "roles"
@@ -23,7 +24,7 @@ class User(Base):
     aktivnost = Column(DateTime, default=datetime.utcnow)
     data_sozdaniya = Column(DateTime, default=datetime.utcnow)
     avatar = Column(String, default="user")
-    theme_color = Column(String, default="pink")
+    bg_color = Column(String, default="pink")
 
     role = relationship("Role", backref="users")
 
@@ -54,6 +55,7 @@ class Klient(Base):
     zapisi = relationship("Zapisi", back_populates="klient")
     kategoria = relationship("KategoriiKlientov", back_populates="klienty")
     programma_loyalnosti = relationship("ProgrammaLoyalnosti", back_populates="klient", uselist=False)
+    
     
 
 class Master(Base):
@@ -116,75 +118,132 @@ zapisi_dop_uslugi = Table(
     
 class Zapisi(Base):
     __tablename__ = "zapisi"
-
     id_zapisi = Column(Integer, primary_key=True, index=True)
-
     id_klienta = Column(
         Integer,
         ForeignKey("klienty.id_klienta"),
-        nullable=False
-    )
-
+        nullable=False)
     id_mastera = Column(
         Integer,
         ForeignKey("mastera.id_mastera"),
-        nullable=False
-    )
-
+        nullable=False)
     id_uslugi = Column(
         Integer,
         ForeignKey("uslugi.id_uslugi"),
-        nullable=False
-    )
-
+        nullable=False)
     data = Column(Date, nullable=False)
-
     vremya = Column(Time, nullable=False)
-
     klient = relationship("Klient", back_populates="zapisi")
-
     master = relationship("Master", back_populates="zapisi")
-
     usluga = relationship("Usluga", back_populates="zapisi")
-
     dop_uslugi = relationship(
         "Usluga",
         secondary=zapisi_dop_uslugi
     )
+    platyzhi = relationship(
+    "Platyzhi",
+    back_populates="zapis",
+    cascade="all, delete"
+)
+    
 class ProgrammaLoyalnosti(Base):
     __tablename__ = "programma_loyalnosti"
-
     id_karty = Column(Integer, primary_key=True, index=True)
     id_klienta = Column(Integer, ForeignKey("klienty.id_klienta"), nullable=False)
     nomer_karty = Column(String(50), nullable=False, unique=True)
     data_sozdaniya = Column(Date, default=datetime.utcnow)
     balans_bonysov = Column(Integer, default=0)
     status = Column(String(50), default="Активная")  
-
     klient = relationship("Klient", back_populates="programma_loyalnosti")
     
     
 class Shift(Base):
     __tablename__ = "shifts"
-
     id_shift = Column(Integer, primary_key=True, index=True)
-
     id_mastera = Column(
         Integer,
-        ForeignKey("mastera.id_mastera")
-    )
-
+        ForeignKey("mastera.id_mastera"))
     data_smeny = Column(Date)
-
     vremya_nachala = Column(Time)
-
     vremya_okonchaniya = Column(Time)
-
     tip_smeny = Column(String(50))
-
     kommentarii = Column(Text)
-
     master = relationship(
         "Master",
         backref="shifts"
+    )
+
+class Otzyv(Base):
+    __tablename__ = "otzyvy"
+    id_otzyva = Column(Integer, primary_key=True, index=True)
+    id_klienta = Column(
+        Integer,
+        ForeignKey("klienty.id_klienta"))
+    id_mastera = Column(
+        Integer,
+        ForeignKey("mastera.id_mastera"))
+    id_zapisi = Column(
+        Integer,
+        ForeignKey("zapisi.id_zapisi"))
+    ocenka = Column(Integer)
+    tekst_otzyva = Column(Text)
+    data_otzyva = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+    klient = relationship("Klient")
+    master = relationship("Master")
+    zapis = relationship("Zapisi")
+  # ===========ИНЦИДЕНТЫ==========
+class Incidenty(Base):
+    __tablename__ = "incidenty"
+    id_incidenta = Column(Integer, primary_key=True)
+    id_klienta = Column(Integer, ForeignKey("klienty.id_klienta"))
+    id_mastera = Column(Integer, ForeignKey("mastera.id_mastera"))
+    id_uslugi = Column(Integer, ForeignKey("uslugi.id_uslugi"))
+
+    tip_incidenta = Column(Enum(
+        "аллергия",
+        "повреждение",
+        "жалоба",
+        "травма",
+        "прочее",
+        name="tip_incidenta_enum"
+    ))
+
+    opisanie = Column(Text)
+    data = Column(DateTime, default=datetime.utcnow)
+    status = Column(String, default="новый")
+
+class Platyzhi(Base):
+    __tablename__ = "platyzhi"
+    id_platyzha = Column(Integer, primary_key=True, index=True)
+    # связь с записью
+    id_zapisi = Column(
+        Integer,
+        ForeignKey("zapisi.id_zapisi"),
+        nullable=False)
+    # сколько всего стоит услуга
+    summa = Column(DECIMAL(10, 2), nullable=False)
+    # сколько оплатил деньгами
+    summa_fact = Column(DECIMAL(10, 2), nullable=False)
+    # сколько оплатил бонусами
+    summa_bonus = Column(DECIMAL(10, 2), default=0)
+    # налик / безналик
+    tip_oplaty = Column(Enum(
+        "Наличные",
+        "Карта",
+        "Комбо",
+        name="tip_oplaty_enum"
+    ))
+    # дата оплаты
+    data_platyzha = Column(
+        DateTime,
+        default=datetime.now)
+    # бонусы начисленные клиенту
+    nachisleno_bonusov = Column(DECIMAL(10,2), nullable=True, default=0)
+    # relationship
+    zapis = relationship(
+        "Zapisi",
+        back_populates="platyzhi"
     )

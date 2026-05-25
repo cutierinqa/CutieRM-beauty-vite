@@ -4,27 +4,17 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
 from app.auth_utils import get_current_user
-
+from app.models import User, Klient
 profile_router = APIRouter(prefix="/profile", tags=["Profile"])
 
 
 @profile_router.get("/me")
-def get_my_profile(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    user = db.query(User).filter(User.id_user == current_user.id_user).first()
-
+def me(current_user: User = Depends(get_current_user)):
     return {
-        "id_user": user.id_user,
-        "fio": user.fio,
-        "email": user.email,
-        "telefon": user.telefon,
-        "avatar": user.avatar,
-        "bg_color": user.bg_color
+        "avatar": current_user.avatar,
+        "bg_color": current_user.bg_color,
+        "telefon": current_user.telefon
     }
-
-
 # =========================
 # UPDATE MY PROFILE
 # =========================

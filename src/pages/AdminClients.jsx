@@ -74,6 +74,7 @@ export default function AdminClients() {
     fio: client.fio || "",
     telefon: client.telefon || "",
     email: client.email || "",
+    id_kategoriiklient: client.id_kategoriiklient|| "",
     kolichestvo_vizitov: client.kolichestvo_vizitov || "",
     data_pervogo_vizita: client.data_pervogo_vizita || "",
     data_poslednego_vizita: client.data_poslednego_vizita || "",
@@ -229,6 +230,7 @@ export default function AdminClients() {
                   "ФИО",
                   "Телефон",
                   "Email",
+                  "Категория",
                   "Кол-во визитов",
                   "Первый визит",
                   "Последний визит",
@@ -271,15 +273,25 @@ export default function AdminClients() {
                     {c.telefon}
                   </TableCell>
 
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    {c.email}
-                  </TableCell>
+                 <TableCell
+  align="center"
+  sx={{
+    color: "black",
+    borderColor: "#444",
+  }}
+>
+  {c.email}
+</TableCell>
+
+<TableCell
+  align="center"
+  sx={{
+    color: "black",
+    borderColor: "#444",
+  }}
+>
+  {c.kategoriya}
+</TableCell>
 
                   <TableCell
                     align="center"

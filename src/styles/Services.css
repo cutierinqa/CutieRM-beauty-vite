@@ -74,27 +74,18 @@
   align-items: flex-end;
   justify-content: center;
   border-radius: 28px;
-
   background:
-    rgba(255, 255, 255, 0.55);
-
+  rgba(255, 255, 255, 0.55);
   border:
-    1px solid rgba(255, 255, 255, 0.45);
-
+  2px solid #ff4fa3;
   color: #ff4fa3;
-
   font-size: 20px;
   font-weight: 700;
-
   cursor: pointer;
-
   transition: 0.35s ease;
-
   box-shadow:
-    0 10px 30px rgba(255, 79, 163, 0.12);
-
+  0 10px 30px rgba(255, 79, 163, 0.12);
   min-height: 140px;
-
   display: flex;
   align-items: flex-end;
 }
@@ -112,7 +103,7 @@
   background:
     radial-gradient(
       circle,
-      rgba(255, 79, 163, 0.18),
+      rgba(255, 79, 164, 0.342),
       transparent 70%
     );
 

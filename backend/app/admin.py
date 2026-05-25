@@ -1,15 +1,18 @@
 import traceback
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
-from app.models import User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi, Role
+from app.models import User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi, Role, Otzyv, Incidenty, KategoriiKlientov,  Platyzhi
 from app.auth_utils import get_current_user
 from datetime import datetime
+from decimal import ROUND_HALF_UP, Decimal
 from app.security import pwd_context
 from passlib.context import CryptContext
 
+
 admin_router = APIRouter(prefix="/admin", tags=["Admin"])
 history_router = APIRouter(prefix="/history",tags=["History"])
+
 
 
 # ===================== ADMIN ME
@@ -171,6 +174,16 @@ def get_roles(
 
 
 # ===================== CLIENTS LIST
+def get_kategoriya_by_vizity(vizity: int):
+    if vizity <= 2:
+        return 3  # Новый клиент
+    elif vizity <= 10:
+        return 1  # Обычный клиент
+    elif vizity <= 18:
+        return 2  # Постоянный клиент
+    else:
+        return 4  # VIP клиент
+    
 @admin_router.get("/clients")
 def get_all_clients(
     current_user: User = Depends(get_current_user),
@@ -179,7 +192,33 @@ def get_all_clients(
     if current_user.id_role != 3:
         raise HTTPException(status_code=403)
 
-    return db.query(Klient).all()
+    clients = db.query(Klient).all()
+
+    result = []
+
+    for c in clients:
+
+        category = db.query(KategoriiKlientov).filter(
+            KategoriiKlientov.id_kategoriiklient == c.id_kategoriiklient
+        ).first()
+
+        result.append({
+            "id_klienta": c.id_klienta,
+            "fio": c.fio,
+            "telefon": c.telefon,
+            "email": c.email,
+
+            "kolichestvo_vizitov": c.kolichestvo_vizitov,
+
+            "id_kategoriiklient": c.id_kategoriiklient,
+            "kategoriya": category.nazvanie if category else "Без категории",
+
+            "data_pervogo_vizita": str(c.data_pervogo_vizita) if c.data_pervogo_vizita else "",
+            "data_poslednego_vizita": str(c.data_poslednego_vizita) if c.data_poslednego_vizita else ""
+        })
+
+    return result
+
 
 @admin_router.put("/clients/{id_klienta}")
 def update_client(
@@ -196,37 +235,38 @@ def update_client(
     ).first()
 
     if not client:
-        raise HTTPException(
-            status_code=404,
-            detail="Клиент не найден"
-        )
+        raise HTTPException(status_code=404)
 
+    # базовые поля
     client.fio = data.get("fio")
     client.telefon = data.get("telefon")
     client.email = data.get("email")
 
-    client.kolichestvo_vizitov = int(
-        data.get("kolichestvo_vizitov") or 0
+    # визиты
+    if data.get("kolichestvo_vizitov") is not None:
+        client.kolichestvo_vizitov = int(data.get("kolichestvo_vizitov"))
+
+    # 🔥 пересчёт категории ВСЕГДА
+    client.id_kategoriiklient = get_kategoriya_by_vizity(
+        client.kolichestvo_vizitov
     )
 
     # даты
     if data.get("data_pervogo_vizita"):
         client.data_pervogo_vizita = datetime.strptime(
-            data.get("data_pervogo_vizita"),
+            data["data_pervogo_vizita"],
             "%Y-%m-%d"
         ).date()
 
     if data.get("data_poslednego_vizita"):
         client.data_poslednego_vizita = datetime.strptime(
-            data.get("data_poslednego_vizita"),
+            data["data_poslednego_vizita"],
             "%Y-%m-%d"
         ).date()
 
     db.commit()
 
-    return {
-        "message": "Клиент обновлен"
-    }
+    return {"message": "Клиент обновлен"}
 
 @admin_router.delete("/clients/{id_klienta}")
 def delete_client(
@@ -263,29 +303,24 @@ def create_client(
     if current_user.id_role != 3:
         raise HTTPException(status_code=403)
 
+    vizity = int(data.get("kolichestvo_vizitov") or 0)
+
     new_client = Klient(
         fio=data.get("fio"),
         telefon=data.get("telefon"),
         email=data.get("email"),
 
-        kolichestvo_vizitov=int(
-            data.get("kolichestvo_vizitov") or 0
-        ),
+        kolichestvo_vizitov=vizity,
+        id_kategoriiklient=get_kategoriya_by_vizity(vizity),
 
         data_pervogo_vizita=(
-            datetime.strptime(
-                data.get("data_pervogo_vizita"),
-                "%Y-%m-%d"
-            ).date()
+            datetime.strptime(data["data_pervogo_vizita"], "%Y-%m-%d").date()
             if data.get("data_pervogo_vizita")
             else None
         ),
 
         data_poslednego_vizita=(
-            datetime.strptime(
-                data.get("data_poslednego_vizita"),
-                "%Y-%m-%d"
-            ).date()
+            datetime.strptime(data["data_poslednego_vizita"], "%Y-%m-%d").date()
             if data.get("data_poslednego_vizita")
             else None
         )
@@ -294,9 +329,8 @@ def create_client(
     db.add(new_client)
     db.commit()
 
-    return {
-        "message": "Клиент добавлен"
-    }
+    return {"message": "Клиент добавлен"}
+
 # ===================== MASTERS LIST
 @admin_router.get("/masters")
 def get_all_masters(
@@ -509,10 +543,16 @@ def create_record(
             )
 
         db.commit()
+        klient.kolichestvo_vizitov += 1
+
+        klient.id_kategoriiklient = get_kategoriya_by_vizity(
+        klient.kolichestvo_vizitov
+    )
 
         return {
             "message": "Запись создана"
         }
+    
 
     except Exception as e:
         db.rollback()
@@ -693,7 +733,6 @@ def update_record(
         "message": "updated"
     }
 
-
 @history_router.get("/me")
 def get_my_history(
     current_user: User = Depends(get_current_user),
@@ -717,6 +756,16 @@ def get_my_history(
 
     for r in records:
 
+        review = db.query(Otzyv).filter(
+            Otzyv.id_zapisi == r.id_zapisi
+        ).first()
+
+        incident = db.query(Incidenty).filter(
+            Incidenty.id_klienta == klient.id_klienta,
+            Incidenty.id_mastera == r.id_mastera,
+            Incidenty.id_uslugi == r.id_uslugi
+        ).first()
+
         record_datetime = datetime.strptime(
             f"{r.data} {r.vremya}",
             "%Y-%m-%d %H:%M:%S"
@@ -724,6 +773,7 @@ def get_my_history(
 
         item = {
             "id_zapisi": r.id_zapisi,
+
             "data": str(r.data),
             "vremya": str(r.vremya),
 
@@ -732,7 +782,31 @@ def get_my_history(
             "usluga": (
                 r.usluga.nazvanie
                 if r.usluga else ""
-            )
+            ),
+
+            "extra_uslugi": [
+                u.id_uslugi
+                for u in r.dop_uslugi
+            ],
+            # ✅ ЖАЛОБА
+            "has_incident": bool(incident),
+            "incident": {
+                "tip_incidenta": incident.tip_incidenta,
+                "opisanie": incident.opisanie,
+                "status": incident.status,
+                "data": str(incident.data)
+            } if incident else None,
+
+
+            # 👇 ОТЗЫВ
+            "has_review": True if review else False,
+            
+
+            "review": {
+                "ocenka": review.ocenka,
+                "tekst_otzyva": review.tekst_otzyva,
+                "data_otzyva": str(review.data_otzyva)
+            } if review else None
         }
 
         if record_datetime < now:
@@ -743,4 +817,352 @@ def get_my_history(
     return {
         "past": past,
         "upcoming": upcoming
+    }
+
+@history_router.post("/review")
+def create_review(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+        klient = db.query(Klient).filter(
+            Klient.id_user == current_user.id_user
+        ).first()
+
+        if not klient:
+            raise HTTPException(status_code=404)
+
+        # проверка что запись существует
+        zapis = db.query(Zapisi).filter(
+            Zapisi.id_zapisi == data.get("id_zapisi")
+        ).first()
+
+        if not zapis:
+            raise HTTPException(status_code=404)
+
+        # запрет повторного отзыва
+        existing = db.query(Otzyv).filter(
+            Otzyv.id_zapisi == zapis.id_zapisi
+        ).first()
+
+        if existing:
+            raise HTTPException(
+                status_code=400,
+                detail="Отзыв уже существует"
+            )
+
+        review = Otzyv(
+            id_klienta=klient.id_klienta,
+            id_mastera=zapis.id_mastera,
+            id_zapisi=zapis.id_zapisi,
+            ocenka=data.get("ocenka"),
+            tekst_otzyva=data.get("tekst_otzyva")
+        )
+
+        db.add(review)
+        db.commit()
+
+        return {
+            "message": "Отзыв сохранен"
+        }
+@history_router.post("/incident")
+def create_incident(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    klient = db.query(Klient).filter(
+        Klient.id_user == current_user.id_user
+    ).first()
+
+    zapisi = db.query(Zapisi).filter(
+        Zapisi.id_zapisi == data["id_zapisi"]
+    ).first()
+
+    if not zapisi:
+        raise HTTPException(status_code=404, detail="Запись не найдена")
+
+    incident = Incidenty(
+        id_klienta=klient.id_klienta,
+        id_mastera=zapisi.id_mastera,
+        id_uslugi=zapisi.id_uslugi,
+        tip_incidenta=data["tip_incidenta"],
+        opisanie=data["opisanie"],
+        data=datetime.now(),
+        status="new"
+        
+    )
+    
+
+    db.add(incident)
+    db.commit()
+
+    return {"message": "incident created"}
+
+# ===================== РАСПИСАНИЕ
+@admin_router.get("/schedule")
+def get_schedule(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    records = db.query(Zapisi).all()
+
+    result = []
+
+    for r in records:
+
+        record_datetime = datetime.strptime(
+            f"{r.data} {r.vremya}",
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        # только будущие записи
+        if record_datetime < datetime.now():
+            continue
+
+        result.append({
+            "id_zapisi": r.id_zapisi,
+
+            "master": (
+                r.master.fio
+                if r.master else ""
+            ),
+
+            "klient": (
+                r.klient.fio
+                if r.klient else ""
+            ),
+
+            "usluga": (
+                r.usluga.nazvanie
+                if r.usluga else ""
+            ),
+
+            "data": str(r.data),
+
+            "vremya_nachala": (
+                str(r.vremya)[:5]
+                if r.vremya else ""
+            ),
+
+            # раз запись существует -> слот занят
+            "status": "Занято"
+        })
+
+    return result
+@admin_router.post("/payments")
+def create_payment(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403)
+
+    zapis = db.query(Zapisi).filter(
+        Zapisi.id_zapisi == data.get("id_zapisi")
+    ).first()
+
+    if not zapis:
+        raise HTTPException(status_code=404)
+
+    klient = db.query(Klient).filter(
+        Klient.id_klienta == zapis.id_klienta
+    ).first()
+
+    procent_map = {
+        1: 0.03,
+        2: 0.07,
+        3: 0.01,
+        4: 0.10,
+    }
+
+    summa_fact = Decimal(str(data.get("summa_fact") or 0))
+    summa_bonus = Decimal(str(data.get("summa_bonus") or 0))
+    summa = Decimal(str(data.get("summa") or 0))
+
+    if summa_fact + summa_bonus != summa:
+        raise HTTPException(
+            status_code=400,
+            detail="Сумма оплаты некорректна"
+        )
+    if summa_fact < 0 or summa_bonus < 0 or summa < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Суммы не могут быть отрицательными"
+        )
+    
+
+    procent = Decimal(str(
+    procent_map.get(klient.id_kategoriiklient, 0)
+))
+
+    # начисление
+    nachislenie = (
+    summa_fact * procent
+        ).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP
+        )
+
+    if klient.programma_loyalnosti:
+
+        if (
+            summa_bonus >
+            klient.programma_loyalnosti.balans_bonysov
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail="Недостаточно бонусов"
+            )
+
+    if summa_bonus > 0:
+        klient.programma_loyalnosti.balans_bonysov -= summa_bonus
+
+    klient.programma_loyalnosti.balans_bonysov += nachislenie
+
+    payment = Platyzhi(
+    id_zapisi=zapis.id_zapisi,
+    summa=summa,
+    summa_fact=summa_fact,
+    summa_bonus=summa_bonus,
+    tip_oplaty=data.get("tip_oplaty"),
+    data_platyzha=datetime.now(),
+    nachisleno_bonusov=nachislenie
+)
+
+    db.add(payment)
+    db.commit()
+
+    return {
+        "message": "Оплата сохранена",
+        "bonus_added": nachislenie
+    }
+
+
+# ПОЛУЧИТЬ ВСЕ УСЛУГИ
+
+
+@admin_router.get("/uslugi")
+def get_uslugi(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    uslugi = (
+            db.query(Usluga)
+            .options(joinedload(Usluga.kategoria))  # 👈 ВОТ СЮДА
+            .all()
+        )
+
+    return uslugi
+
+
+# ДОБАВИТЬ УСЛУГУ
+
+@admin_router.post("/uslugi")
+def create_usluga(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
+
+    usluga = Usluga(
+        nazvanie=data.get("nazvanie"),
+        opisanie=data.get("opisanie"),
+        cena=data.get("cena")
+    )
+
+    db.add(usluga)
+
+    db.commit()
+
+    db.refresh(usluga)
+
+    return {
+        "message": "Услуга добавлена",
+        "id": usluga.id_uslugi
+    }
+
+
+# РЕДАКТИРОВАТЬ УСЛУГУ
+
+@admin_router.put("/uslugi/{id_uslugi}")
+def update_usluga(
+    id_uslugi: int,
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
+
+    usluga = db.query(Usluga).filter(
+        Usluga.id_uslugi == id_uslugi
+    ).first()
+
+    if not usluga:
+        raise HTTPException(
+            status_code=404,
+            detail="Услуга не найдена"
+        )
+
+    usluga.nazvanie = data.get("nazvanie")
+
+    usluga.opisanie = data.get("opisanie")
+
+    usluga.cena = data.get("cena")
+
+    db.commit()
+
+    return {
+        "message": "Услуга обновлена"
+    }
+
+
+# УДАЛИТЬ УСЛУГУ
+
+@admin_router.delete("/uslugi/{id_uslugi}")
+def delete_usluga(
+    id_uslugi: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
+
+    usluga = db.query(Usluga).filter(
+        Usluga.id_uslugi == id_uslugi
+    ).first()
+
+    if not usluga:
+        raise HTTPException(
+            status_code=404,
+            detail="Услуга не найдена"
+        )
+
+    db.delete(usluga)
+
+    db.commit()
+
+    return {
+        "message": "Услуга удалена"
     }

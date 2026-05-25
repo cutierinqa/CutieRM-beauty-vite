@@ -70,7 +70,7 @@ const Services = () => {
               <h3>{service.usluga}</h3>
               <p>{service.opisanie}</p>
               <div className="service-info">
-                <span>Длительность: {service.dlitelnost} мин</span>
+                <span>Средняя длительность: {service.dlitelnost} мин</span>
                 <span>Цена: {service.bazovaya_cena} ₽</span>
               </div>
             </div>

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.models import User, Klient
+from app.models import Platyzhi, User, Klient, Zapisi
 from app.auth_utils import get_current_user
 
 router = APIRouter(prefix="/client", tags=["Client"])
@@ -36,3 +36,4 @@ def get_me(
             "opisanie": klient.kategoria.opisanie if klient.kategoria else None
         }
     }
+

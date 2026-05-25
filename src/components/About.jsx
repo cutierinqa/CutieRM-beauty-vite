@@ -9,8 +9,8 @@ import o4 from "../assets/o4.png";
 import o5 from "../assets/o5.png";
 import o6 from "../assets/o6.png";
 import photo1 from "../assets/photo1.png";
-import photo2 from "../assets/photo2.png";
-import photo3 from "../assets/photo3.png";
+import photo2 from "../assets/photo2.jpg";
+import photo3 from "../assets/photo3.jpg";
 import photo4 from "../assets/photo4.jpg";
 import photo5 from "../assets/photo5.png";
 

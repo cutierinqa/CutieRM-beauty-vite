@@ -6,7 +6,16 @@ import {
   CircularProgress,
   IconButton,
   Button,
-  Stack
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from "../api/axios";
@@ -15,6 +24,8 @@ import "../styles/Loyalty.css";
 export default function Loyalty() {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [history, setHistory] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,7 +73,28 @@ export default function Loyalty() {
     return date.toLocaleDateString("ru-RU");
   };
 
-  return (
+  const loadHistory = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get(
+      "/loyalty/history",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setHistory(res.data);
+    setHistoryOpen(true);
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+  return ( <>
     <Box
       sx={{
         minHeight: "100vh",
@@ -150,7 +182,7 @@ export default function Loyalty() {
                 background: "#ff4fa3"
               }
                 }}
-                onClick={() => alert("Пока что функционал не реализован")}
+                onClick={loadHistory}
               >
                 История начислений
               </Button>
@@ -159,5 +191,79 @@ export default function Loyalty() {
         </Box>
       </Box>
     </Box>
+      <Dialog
+    open={historyOpen}
+    onClose={() => setHistoryOpen(false)}
+    fullWidth
+    maxWidth="md"
+  >
+    <DialogTitle>
+      История начислений
+    </DialogTitle>
+
+    <DialogContent>
+
+      <Table>
+
+        <TableHead>
+          <TableRow>
+            <TableCell>Дата</TableCell>
+            <TableCell>Услуга</TableCell>
+            <TableCell>Оплачено</TableCell>
+            <TableCell>Начислено бонусов</TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+
+          {history.map((item) => (
+            <TableRow key={item.id}>
+
+              <TableCell>
+                {new Date(item.date)
+                  .toLocaleDateString("ru-RU")}
+              </TableCell>
+
+              <TableCell>
+                {item.usluga}
+              </TableCell>
+
+              <TableCell>
+                {item.summa} ₽
+              </TableCell>
+
+              <TableCell>
+                {item.bonus}
+              </TableCell>
+
+            </TableRow>
+          ))}
+
+        </TableBody>
+
+      </Table>
+
+    </DialogContent>
+
+    <DialogActions>
+      <Button onClick={() => setHistoryOpen(false)}
+         sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}>
+        Закрыть
+      </Button>
+    </DialogActions>
+
+  </Dialog> </>
   );
 }

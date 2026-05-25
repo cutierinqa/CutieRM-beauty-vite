@@ -30,6 +30,8 @@ export default function Admin() {
   const [admin, setAdmin] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+  const [mastersList, setMastersList] = useState([]);
+  const [selectedMaster, setSelectedMaster] = useState("all");
 
   useEffect(() => {
     const fetchAdmin = async () => {
@@ -52,6 +54,12 @@ export default function Admin() {
     fetchAdmin();
   }, [navigate]);
 
+  const formatTime = (t) => {
+  if (!t) return "—";
+  return t.toString().slice(0, 5); // HH:mm
+};
+
+
   const fetchData = async (type) => {
     try {
       if (tableType === type) {
@@ -68,12 +76,16 @@ export default function Admin() {
       }
 
       let url = "";
+
       switch (type) {
         case "clients":
           url = "/admin/clients";
           break;
         case "masters":
           url = "/admin/masters";
+          break;
+        case "uslugi":
+          url = "/admin/uslugi";
           break;
         case "schedule":
           url = "/admin/schedule";
@@ -87,144 +99,555 @@ export default function Admin() {
       }
 
       const res = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  headers: { Authorization: `Bearer ${token}` },
+});
 
-      setData(res.data || []);
+const dataRes = res.data || [];
+setData(dataRes);
+
+      // уникальные мастера
+      const uniqueMasters = Array.from(
+  new Set(
+    dataRes
+      .map((x) => x.master?.trim())
+      .filter(Boolean)
+  )
+);
+
+setMastersList(uniqueMasters);
+
+      setLoading(false);
       setTableType(type);
-      setLoading(false);
     } catch (err) {
-      console.error(err);
-      setData([]);
-      setLoading(false);
-    }
+  console.error(err);
+  setData([]);
+  setLoading(false);
+}
   };
+ 
+  const filteredData =
+  tableType === "schedule"
+    ? [...(data || [])]
+
+        // только будущие записи
+        .filter((item) => {
+          const time =
+            item.vremya_nachala || item.vremya;
+
+          if (!item.data || !time) return false;
+
+          const recordDate = new Date(
+            `${item.data}T${time}`
+          );
+
+          return recordDate >= new Date();
+        })
+
+        // фильтр по мастеру
+        .filter((item) =>
+          selectedMaster === "all"
+            ? true
+            : item.master?.trim() === selectedMaster
+        )
+
+        // сортировка
+        .sort((a, b) => {
+          const timeA =
+            a.vremya_nachala || a.vremya;
+
+          const timeB =
+            b.vremya_nachala || b.vremya;
+
+          const dateA = new Date(
+            `${a.data}T${timeA}`
+          );
+
+          const dateB = new Date(
+            `${b.data}T${timeB}`
+          );
+
+          return dateA - dateB;
+        })
+
+    : data;
+    const tableContainerSx = {
+  mt: 3,
+  background: "rgba(255,255,255,0.72)",
+  backdropFilter: "blur(16px)",
+  borderRadius: "24px",
+  border: "1px solid rgba(255,79,163,0.12)",
+  overflow: "hidden",
+  boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
+};
+
+const tableHeadCellSx = {
+  color: "#ff4fa3",
+  fontWeight: 800,
+  fontSize: "15px",
+  borderBottom: "2px solid rgba(255,79,163,0.15)",
+};
+
+const tableBodyCellSx = {
+  color: "#2b1d26",
+  fontWeight: 600,
+  borderBottom: "1px solid rgba(255,79,163,0.08)",
+};
+
+const tableRowSx = {
+  transition: "0.2s ease",
+
+  "&:hover": {
+    background: "rgba(255,79,163,0.04)",
+  },
+};
 
   const renderTable = () => {
-    if (!data || data.length === 0) return <Typography mt={2}></Typography>;
+    if (tableType === "schedule" && filteredData.length === 0) {
+  return <Typography mt={2}>Нет будущих смен</Typography>;
+} 
+
 
     switch (tableType) {
-      case "clients":
-        return (
-          <TableContainer component={Paper} sx={{ mt: 3 }}>
-            <Table>
-              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
-                <TableRow>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>ФИО</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Телефон</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Email</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Визиты</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата первого визита</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата последнего визита</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((client) => (
-                  <TableRow key={client.id_klienta}>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.fio}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.telefon}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.email}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.kolichestvo_vizitov}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.data_pervogo_vizita}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{client.data_poslednego_vizita}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        );
-      case "masters":
-        return (
-          <TableContainer
-            component={Paper}
-            sx={{
-              mt: 3,
-              background: "rgba(255,255,255,0.6)",
-              backdropFilter: "blur(14px)",
-              borderRadius: "20px",
-              border: "1px solid rgba(255,79,163,0.12)",
-              overflow: "hidden",
-            }}>
-            <Table>
-              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
-                <TableRow>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>ФИО</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Квалификация</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Специальность</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((master) => (
-                  <TableRow key={master.id_mastera}>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{master.fio}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{master.kvalifikaciya}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{master.dolzhnost}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        );
+     case "clients":
+  return (
+    <TableContainer component={Paper} sx={tableContainerSx}>
+      <Table>
+        <TableHead
+          sx={{
+            background: "rgba(255,79,163,0.08)",
+          }}
+        >
+          <TableRow>
+            <TableCell sx={tableHeadCellSx}>ФИО</TableCell>
+            <TableCell sx={tableHeadCellSx}>Телефон</TableCell>
+            <TableCell sx={tableHeadCellSx}>Email</TableCell>
+            <TableCell sx={tableHeadCellSx}>Визиты</TableCell>
+            <TableCell sx={tableHeadCellSx}>
+              Дата первого визита
+            </TableCell>
+            <TableCell sx={tableHeadCellSx}>
+              Дата последнего визита
+            </TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {data.map((client) => (
+            <TableRow
+              key={client.id_klienta}
+              hover
+              sx={tableRowSx}
+            >
+              <TableCell sx={tableBodyCellSx}>
+                {client.fio}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {client.telefon}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {client.email}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {client.kolichestvo_vizitov}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {client.data_pervogo_vizita}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {client.data_poslednego_vizita}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+     case "masters":
+  return (
+    <TableContainer component={Paper} sx={tableContainerSx}>
+      <Table>
+        <TableHead
+          sx={{
+            background: "rgba(255,79,163,0.08)",
+          }}
+        >
+          <TableRow>
+            <TableCell sx={tableHeadCellSx}>ФИО</TableCell>
+            <TableCell sx={tableHeadCellSx}>
+              Квалификация
+            </TableCell>
+            <TableCell sx={tableHeadCellSx}>
+              Специальность
+            </TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {data.map((master) => (
+            <TableRow
+              key={master.id_mastera}
+              hover
+              sx={tableRowSx}
+            >
+              <TableCell sx={tableBodyCellSx}>
+                {master.fio}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {master.kvalifikaciya}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {master.dolzhnost}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+case "uslugi":
+  return (
+    <TableContainer component={Paper} sx={tableContainerSx}>
+      <Table>
+
+        <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
+          <TableRow>
+            <TableCell sx={tableHeadCellSx}>Название</TableCell>
+            <TableCell sx={tableHeadCellSx}>Описание</TableCell>
+            <TableCell sx={tableHeadCellSx}>Категория</TableCell>
+            <TableCell sx={tableHeadCellSx}>Длительность</TableCell>
+            <TableCell sx={tableHeadCellSx}>Базовая цена</TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {data.map((usluga) => (
+            <TableRow key={usluga.id_uslugi} hover sx={tableRowSx}>
+
+              <TableCell sx={tableBodyCellSx}>
+                {usluga.nazvanie}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {usluga.opisanie}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {usluga.kategoria?.nazvanie || "—"}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {usluga.dlitelnost ? `${usluga.dlitelnost} мин` : "—"}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {usluga.bazovaya_cena} ₽
+              </TableCell>
+
+            </TableRow>
+          ))}
+        </TableBody>
+
+      </Table>
+    </TableContainer>
+  );
       case "schedule":
-        return (
-          <TableContainer component={Paper} sx={{ mt: 3 }}>
-            <Table>
-              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
-                <TableRow>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Мастер</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Время</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                  {data.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell sx={{ color: "white", borderColor: "#444" }}>
-                      {item.master}
-                    </TableCell>
+    return ( <>
+        <Stack
+           direction="row"
+            spacing={1}
+            sx={{
+              mb: 2,
+              flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+        >
+          <Button
+            onClick={() => setSelectedMaster("all")}
+            variant={selectedMaster === "all" ? "contained" : "outlined"}
+            sx={{
+              borderRadius: "20px",
+              textTransform: "none",
+              fontWeight: 700,
+              color: selectedMaster === "all" ? "#fff" : "#ff4fa3",
+              background:
+                selectedMaster === "all"
+                  ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
+                  : "#fff",
+              border: "2px solid #ff4fa3",
+            }}
+          >
+            Все мастера
+          </Button>
 
-                    <TableCell sx={{ color: "white", borderColor: "#444" }}>
-                      {item.data}
-                    </TableCell>
+          {mastersList.map((m) => (
+            <Button
+              key={m}
+              onClick={() => setSelectedMaster(m)}
+              variant={selectedMaster === m ? "contained" : "outlined"}
+              sx={{
+                borderRadius: "20px",
+                textTransform: "none",
+                fontWeight: 700,
+                color: selectedMaster === m ? "#fff" : "#ff4fa3",
+                background:
+                  selectedMaster === m
+                    ? "linear-gradient(135deg, #ff4fa3, #ff8ec6)"
+                    : "#fff",
+                border: "2px solid #ff4fa3",
+              }}
+            >
+              {m}
+            </Button>
+          ))}
+        </Stack>
+    <TableContainer
+      component={Paper}
+      sx={{
+        mt: 3,
+        background: "rgba(255,255,255,0.72)",
+        backdropFilter: "blur(16px)",
+        borderRadius: "24px",
+        border: "1px solid rgba(255,79,163,0.12)",
+        overflow: "hidden",
+        boxShadow: "0 20px 50px rgba(255,79,163,0.12)",
+      }}
+    >
+      <Table>
+        <TableHead
+          sx={{
+            background: "rgba(255,79,163,0.08)",
+          }}
+        >
+          <TableRow>
+            <TableCell
+              sx={{
+                color: "#ff4fa3",
+                fontWeight: 800,
+                fontSize: "15px",
+                borderBottom:
+                  "2px solid rgba(255,79,163,0.15)",
+              }}
+            >
+              Мастер
+            </TableCell>
 
-                    <TableCell sx={{ color: "white", borderColor: "#444" }}>
-                      {item.vremya}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        );
+            <TableCell
+              sx={{
+                color: "#ff4fa3",
+                fontWeight: 800,
+                fontSize: "15px",
+                borderBottom:
+                  "2px solid rgba(255,79,163,0.15)",
+              }}
+            >
+              Дата
+            </TableCell>
+
+            <TableCell
+              sx={{
+                color: "#ff4fa3",
+                fontWeight: 800,
+                fontSize: "15px",
+                borderBottom:
+                  "2px solid rgba(255,79,163,0.15)",
+              }}
+            >
+              Время
+            </TableCell>
+            <TableCell
+            sx={{
+              color: "#ff4fa3",
+              fontWeight: 800,
+              fontSize: "15px",
+              borderBottom:
+                "2px solid rgba(255,79,163,0.15)",
+            }}
+          >
+            Клиент
+          </TableCell>
+        <TableCell
+  sx={{
+    color: "#ff4fa3",
+    fontWeight: 800,
+    fontSize: "15px",
+    borderBottom:
+      "2px solid rgba(255,79,163,0.15)",
+  }}
+>
+  Статус
+</TableCell>
+            
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {filteredData.map((item, index) => (
+            <TableRow
+              key={index}
+              hover
+              sx={{
+                transition: "0.2s ease",
+
+                "&:hover": {
+                  background:
+                    "rgba(255,79,163,0.04)",
+                },
+              }}
+            >
+              <TableCell
+                sx={{
+                  color: "#2b1d26",
+                  fontWeight: 600,
+                  borderBottom:
+                    "1px solid rgba(255,79,163,0.08)",
+                }}
+              >
+                {item.master}
+              </TableCell>
+
+              <TableCell
+                sx={{
+                  color: "#2b1d26",
+                  fontWeight: 600,
+                  borderBottom:
+                    "1px solid rgba(255,79,163,0.08)",
+                }}
+              >
+                {item.data}
+              </TableCell>
+
+              <TableCell
+                sx={{
+                  color: "#2b1d26",
+                  fontWeight: 600,
+                  borderBottom:
+                    "1px solid rgba(255,79,163,0.08)",
+                }}
+              >
+                {formatTime(item.vremya_nachala || item.vremya)}
+              </TableCell>
+              <TableCell
+              sx={{
+                color: "#2b1d26",
+                fontWeight: 600,
+                borderBottom:
+                  "1px solid rgba(255,79,163,0.08)",
+              }}
+            >
+              {item.klient}
+            </TableCell>
+            <TableCell>
+              <Box
+                sx={{
+                  display: "inline-block",
+                  px: 2,
+                  py: 0.6,
+                  borderRadius: "12px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+
+                  background:
+                    item.status === "Занято"
+                      ? "rgba(244,67,54,0.12)"
+                      : "rgba(76,175,80,0.12)",
+
+                  color:
+                    item.status === "Занято"
+                      ? "#e72a27"
+                      : "#4bb450",
+                }}
+              >
+                {item.status}
+              </Box>
+            </TableCell>
+              
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    </>
+  );
       case "records":
-        return (
-          <TableContainer component={Paper} sx={{ mt: 3 }}>
-            <Table>
-              <TableHead sx={{ background: "rgba(255,79,163,0.08)" }}>
-                <TableRow>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Клиент</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Мастер</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Услуга</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Доп услуги</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Дата</TableCell>
-                  <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>Время</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((record) => (
-                  <TableRow key={record.id_zapisi}>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.klient}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.master}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.usluga}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.dop_uslugi || "—"}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.data}</TableCell>
-                    <TableCell sx={{ color: "#2b1d26", fontWeight: 600 }}>{record.vremya}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        );
+  return (
+    <TableContainer component={Paper} sx={tableContainerSx}>
+      <Table>
+        <TableHead
+          sx={{
+            background: "rgba(255,79,163,0.08)",
+          }}
+        >
+          <TableRow>
+            <TableCell sx={tableHeadCellSx}>
+              Клиент
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Мастер
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Услуга
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Доп услуги
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Дата
+            </TableCell>
+
+            <TableCell sx={tableHeadCellSx}>
+              Время
+            </TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {data.map((record) => (
+            <TableRow
+              key={record.id_zapisi}
+              hover
+              sx={tableRowSx}
+            >
+              <TableCell sx={tableBodyCellSx}>
+                {record.klient}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {record.master}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {record.usluga}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {record.dop_uslugi || "—"}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {record.data}
+              </TableCell>
+
+              <TableCell sx={tableBodyCellSx}>
+                {formatTime(record.vremya)}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
       default:
         return null;
     }
@@ -319,7 +742,11 @@ export default function Admin() {
             Управление мастерами
           </MenuItem>
 
-          <MenuItem onClick={() => navigate("/admin/shedule")}>
+          <MenuItem onClick={() => navigate("/admin/uslugi")}>
+            Управление услугами
+          </MenuItem>
+
+          <MenuItem onClick={() => navigate("/admin/sсhedule")}>
             Управление расписанием
           </MenuItem>
 
@@ -380,13 +807,25 @@ export default function Admin() {
           variant="contained"
           onClick={() => fetchData("clients")}
           sx={{
-            minWidth: 170,
-            backgroundColor: "#4b3126",
-            "&:hover": {
-              backgroundColor: "#3a231a",
-              
-            },
-          }}
+                py: 1.2,
+                minWidth: 170,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)", 
+                border: "2px solid #ff4fa3",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
         >
           Клиенты
         </Button>
@@ -395,26 +834,78 @@ export default function Admin() {
           variant="contained"
           onClick={() => fetchData("masters")}
           sx={{
-            minWidth: 170,
-            backgroundColor: "#6d4c41",
-            "&:hover": {
-              backgroundColor: "#5a3c32",
-            },
-          }}
-        >
+                py: 1.2,
+                minWidth: 170,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)", 
+                border: "2px solid #ff4fa3",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}>
           Мастера
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={() => fetchData("uslugi")}
+          sx={{
+                py: 1.2,
+                minWidth: 170,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)", 
+                border: "2px solid #ff4fa3",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
+        >
+          Услуги
         </Button>
 
         <Button
           variant="contained"
           onClick={() => fetchData("schedule")}
           sx={{
-            minWidth: 170,
-            backgroundColor: "#8d6e63",
-            "&:hover": {
-              backgroundColor: "#795548",
-            },
-          }}
+                py: 1.2,
+                minWidth: 170,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)", 
+                border: "2px solid #ff4fa3",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
         >
           Расписание
         </Button>
@@ -423,13 +914,25 @@ export default function Admin() {
           variant="contained"
           onClick={() => fetchData("records")}
           sx={{
-            minWidth: 170,
-            backgroundColor: "#a1887f",
-            "&:hover": {
-              backgroundColor: "#8d6e63",
-              
-            },
-          }}
+                py: 1.2,
+                minWidth: 170,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)", 
+                border: "2px solid #ff4fa3",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
         >
           Записи
         </Button>

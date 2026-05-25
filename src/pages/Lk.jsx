@@ -25,19 +25,21 @@ const avatars = {
 };
 
 const colors = [
-  { id: "pink", color: "#ff4fa3" },
-  { id: "purple", color: "#8b5cf6" },
-  { id: "blue", color: "#3b82f6" },
-  { id: "mint", color: "#10b981" },
+  { id: "pink", color: "#fd6fb4" },
+  { id: "#a57ffd", color: "#a57ffd" },
+  { id: "#7d7fff", color: "#7d7fff" },
+  { id: "#ffea8a", color: "#ffea8a" },
+  { id: "#9ffd83", color: "#9ffd83" },
 ];
 
 export default function Lk() {
   const [client, setClient] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadClient = async () => {
+    const loadData = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -45,21 +47,28 @@ export default function Lk() {
           return;
         }
 
-        const res = await axios.get("/profile/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const [clientRes, profileRes] = await Promise.all([
+          axios.get("/client/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("/profile/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-        setClient(res.data);
+        setClient(clientRes.data);
+        setProfile(profileRes.data);
+
       } catch (err) {
         console.error(err);
         navigate("/login");
       }
     };
 
-    loadClient();
+    loadData();
   }, [navigate]);
 
-  if (!client) {
+  if (!client || !profile) {
     return (
       <Typography align="center" mt={10} fontSize="1.5rem">
         Загрузка данных клиента...
@@ -74,7 +83,6 @@ export default function Lk() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: client.bg_color || "#f5f5f5",
         px: 2,
       }}
     >
@@ -127,20 +135,20 @@ export default function Lk() {
 
         {/* аватар */}
         <Avatar
-        src={client.avatar ? avatars[client.avatar] : undefined}
-        sx={{
-          mb: 2,
-          width: 90,
-          height: 90,
-          bgcolor: client.bg_color || "#4b3126",
-          border: "3px solid rgba(255,255,255,0.3)",
-          boxShadow: 3
-        }}
-      >
-        {!client.avatar && <PersonIcon sx={{ fontSize: 40 }} />}
-      </Avatar>
+          src={profile.avatar ? avatars[profile.avatar] : undefined}
+          sx={{
+            mb: 2,
+            width: 90,
+            height: 90,
+            bgcolor: profile.bg_color || "#969696",
+            border: "3px solid rgba(255,255,255,0.3)",
+            boxShadow: 3
+          }}
+        >
+          {!profile.avatar && <PersonIcon sx={{ fontSize: 40 }} />}
+        </Avatar>
 
-        <Typography variant="h4" fontWeight={600}>
+        <Typography variant="h4">
           {client.fio}
         </Typography>
 
@@ -168,13 +176,24 @@ export default function Lk() {
           variant="contained"
           onClick={() => navigate("/")}
           sx={{
-            fontSize: "1.1rem",
-            px: 5,
-            py: 1.5,
-            backgroundColor: "#4b3126",
-            color: "white",
-            "&:hover": { backgroundColor: "#3a231a" },
-          }}
+                py: 1.7,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                border: "2px solid #ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
         >
           На главную
         </Button>

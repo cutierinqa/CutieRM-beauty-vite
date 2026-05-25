@@ -3,9 +3,8 @@
 .hero,
 .hero2 {
   text-align: center;
-
-  padding: 100px 20px;
-
+  padding: 60px 20px;
+  font-family: "Inter", sans-serif;
   position: relative;
   overflow: hidden;
 }

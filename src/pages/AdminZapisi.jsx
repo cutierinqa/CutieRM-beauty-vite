@@ -25,14 +25,9 @@ import axios from "../api/axios";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 
-
-      
-
-
 export default function AdminRecords() {
     
   const token = localStorage.getItem("token");
-
   const emptyForm = {
     id_klienta: "",
     id_mastera: "",
@@ -40,24 +35,51 @@ export default function AdminRecords() {
     extra_uslugi: [],
     data: "",
     vremya: "",
-  };
-  
-  const [records, setRecords] = useState([]);
+    status: "Активна",
+};
+  const [tab, setTab] = useState("future"); 
   const [form, setForm] = useState(emptyForm);
   const [extraUslugi, setExtraUslugi] = useState([]);
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
-    const [klients, setKlients] = useState([]);
-    const [masters, setMasters] = useState([]);
-    const [uslugi, setUslugi] = useState([]);
-  const loadRecords = async () => {
-    const res = await axios.get("/admin/records", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const [klients, setKlients] = useState([]);
+  const [masters, setMasters] = useState([]);
+  const [uslugi, setUslugi] = useState([]);
+  const [futureRecords, setFutureRecords] = useState([]);
+  const [pastRecords, setPastRecords] = useState([]);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({
+  id_zapisi: "",
+  summa: "",
+  summa_fact: "",
+  summa_bonus: "",
+  tip_oplaty: "",
+});
 
-    setRecords(res.data || []);
-  };
+const loadRecords = async () => {
+  const res = await axios.get("/admin/records", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const all = res.data || [];
+  const now = new Date();
+  const future = [];
+  const past = [];
+
+  all.forEach((r) => {
+    const recordDate = new Date(
+      `${r.data}T${r.vremya}`
+    );
+    if (recordDate >= now) {
+      future.push(r);
+    } else {
+      past.push(r);}
+  });
+
+  setFutureRecords(future);
+  setPastRecords(past);
+};
   useEffect(() => {
   loadRecords();
   loadLists();
@@ -80,6 +102,10 @@ export default function AdminRecords() {
 
     loadRecords();
   };
+  const currentList =
+  tab === "future"
+    ? futureRecords
+    : pastRecords;
 
   const handleEdit = (record) => {
   setCurrentRecord({
@@ -95,6 +121,7 @@ export default function AdminRecords() {
   setEditOpen(true);
   
 };
+
         
   const handleSave = async () => {
     await axios.put(
@@ -108,6 +135,34 @@ export default function AdminRecords() {
     setEditOpen(false);
     loadRecords();
   };
+  const tipOptions = [
+  { label: "Наличные", value: "Наличные" },
+  { label: "Карта", value: "Карта" },
+  { label: "Комбо", value: "Комбо" },
+];
+  const handlePayment = async () => {
+  try {
+
+    await axios.post(
+      "/admin/payments",
+      paymentForm,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("Оплата сохранена");
+
+    setPaymentOpen(false);
+
+  } catch (err) {
+    console.log(err);
+    alert("Ошибка оплаты");
+  }
+};
+
     const loadLists = async () => {
     const [k, m, u, extra] = await Promise.all([
     axios.get("/admin/clients-list", {
@@ -258,7 +313,7 @@ export default function AdminRecords() {
   </>
 );
 
-  return (
+  return (<>
     <Box
   sx={{
     minHeight: "100vh",
@@ -310,19 +365,18 @@ export default function AdminRecords() {
             variant="contained"
             onClick={() => setAddOpen(true)}
             sx={{
-              px: 3,
-              py: 1.2,
-              borderRadius: "14px",
-              fontWeight: 700,
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-              },
-            }}
+            },
+          }}
           >
             Добавить запись
           </Button>
@@ -340,97 +394,254 @@ export default function AdminRecords() {
                 border: "1px solid rgba(255,79,163,0.12)",
               }}
           >
-            <TableHead>
-              <TableRow>
-                {[
-                  "Клиент",
-                  "Мастер",
-                  "Услуга",
-                  "Доп услуги", 
-                  "Дата",
-                  "Время",
-                  "Действия",
-                ].map((title, index) => (
-                  <TableCell
-                    key={index}
-                    align="center"
-                    sx={{
-                      color: "#2b1d26",
-                      fontWeight: 600,
-                      borderColor: "rgba(255,79,163,0.1)",
-                    }}
-                  >
-                    {title}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
+           {/* ПЕРЕКЛЮЧАТЕЛЬ */}
+<Box
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    mb: 4,
+  }}
+>
+  <Box
+    sx={{
+      display: "flex",
+      gap: 2,
 
-            <TableBody>
-              {records.map((r) => (
-                <TableRow key={r.id_zapisi}>
-                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.klient}</TableCell>
-                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.master}</TableCell>
-                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.usluga}</TableCell>
-                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.dop_uslugi || "—"}</TableCell>
-                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.data}</TableCell>
-                <TableCell align="center" sx={{ color: "black", borderColor: "#444" }}>{r.vremya}</TableCell>
+      background: "rgba(255,255,255,0.7)",
+      backdropFilter: "blur(12px)",
 
-                  <TableCell
-                    align="center"
-                    sx={{
-                        color: "black",
-                      borderColor: "#444",
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      justifyContent="center"
-                    >
-                      <Button
-                        size="small"
-                        variant="contained"
-                        onClick={() => handleEdit(r)}
-                        sx={{
-                          background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-                          fontWeight: 600,
-                          textTransform: "none",
-                          borderRadius: "10px",
+      borderRadius: "18px",
+      padding: "8px",
 
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                          },
-                        }}
-                      >
-                        Редактировать
-                      </Button>
+      border: "1px solid rgba(255,79,163,0.12)",
 
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="error"
-                        onClick={() =>
-                          deleteRecord(r.id_zapisi)
-                        }
-                        sx={{
-                          background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
-                          fontWeight: 600,
-                          textTransform: "none",
-                          borderRadius: "10px",
+      boxShadow:
+        "0 10px 30px rgba(255,79,163,0.08)",
+    }}
+  >
+    <button
+      onClick={() => setTab("future")}
+      style={{
+        padding: "12px 22px",
+        borderRadius: "14px",
+        border: "none",
+        cursor: "pointer",
 
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                          },
-                        }}
-                      >
-                        Удалить
-                      </Button>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+        fontWeight: 700,
+        fontSize: "15px",
+
+        transition: "0.2s ease",
+
+        background:
+          tab === "future"
+            ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
+            : "transparent",
+
+        color:
+          tab === "future"
+            ? "white"
+            : "#444",
+      }}
+    >
+      Актуальные
+    </button>
+
+    <button
+      onClick={() => setTab("past")}
+      style={{
+        padding: "12px 22px",
+        borderRadius: "14px",
+        border: "none",
+        cursor: "pointer",
+
+        fontWeight: 700,
+        fontSize: "15px",
+
+        transition: "0.2s ease",
+
+        background:
+          tab === "past"
+            ? "linear-gradient(135deg,#ff4fa3,#ff8ec6)"
+            : "transparent",
+
+        color:
+          tab === "past"
+            ? "white"
+            : "#444",
+      }}
+    >
+      Прошедшие
+    </button>
+  </Box>
+</Box>
+
+{/* TABLE */}
+<Box sx={{ overflowX: "auto" }}>
+  <Table
+    sx={{
+      minWidth: 1100,
+
+      background: "rgba(255,255,255,0.6)",
+      backdropFilter: "blur(14px)",
+
+      borderRadius: "20px",
+
+      border: "1px solid rgba(255,79,163,0.12)",
+    }}
+  >
+    <TableHead>
+      <TableRow>
+        <TableCell align="center">
+          Клиент
+        </TableCell>
+
+        <TableCell align="center">
+          Мастер
+        </TableCell>
+
+        <TableCell align="center">
+          Услуга
+        </TableCell>
+
+        <TableCell align="center">
+          Доп услуги
+        </TableCell>
+
+        <TableCell align="center">
+          Дата
+        </TableCell>
+
+        <TableCell align="center">
+          Время
+        </TableCell>
+
+        <TableCell align="center">
+          {tab === "future"
+            ? "Действия"
+            : "Оплата"}
+        </TableCell>
+      </TableRow>
+    </TableHead>
+
+    <TableBody>
+      {currentList.map((r) => (
+        <TableRow key={r.id_zapisi}>
+          <TableCell align="center">
+            {r.klient}
+          </TableCell>
+
+          <TableCell align="center">
+            {r.master}
+          </TableCell>
+
+          <TableCell align="center">
+            {r.usluga}
+          </TableCell>
+
+          <TableCell align="center">
+            {r.dop_uslugi || "—"}
+          </TableCell>
+
+          <TableCell align="center">
+            {r.data}
+          </TableCell>
+
+          <TableCell align="center">
+            {r.vremya}
+          </TableCell>
+
+          <TableCell align="center">
+            {tab === "future" ? (
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent="center"
+              >
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={() => handleEdit(r)}
+                  sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+                >
+                  Редактировать
+                </Button>
+
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={() =>
+                    deleteRecord(r.id_zapisi)
+                  }
+                  sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+                >
+                  Удалить
+                </Button>
+              </Stack>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setPaymentForm({
+                    id_zapisi: r.id_zapisi,
+                    summa: "",
+                    summa_fact: "",
+                    summa_bonus: "",
+                    tip_oplaty: "",
+                  });
+
+                  setPaymentOpen(true);
+                }}
+                sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+              >
+                Оплата
+              </Button>
+            )}
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</Box>
+           
+
+            
           </Table>
         </Box>
 
@@ -441,15 +652,14 @@ export default function AdminRecords() {
           fullWidth
           PaperProps={{
               sx: {
-                borderRadius: "20px",
-                p: 2,
-
-                background: "rgba(255,255,255,0.9)",
-                backdropFilter: "blur(16px)",
-
-                boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
-              },
-            }}
+          borderRadius: "22px",
+          p: 2,
+          background: "rgba(255,255,255,0.85)",
+          backdropFilter: "blur(18px)",
+          border: "1px solid rgba(255,79,163,0.15)",
+          boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+        },
+      }}
         >
           <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>
             Добавить запись
@@ -459,36 +669,19 @@ export default function AdminRecords() {
             {renderFields(form, setForm)}
           </DialogContent>
 
-          <DialogActions>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
             <Button onClick={() => setAddOpen(false)} sx={{
-            
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "14px",
+            px: 3,
+            fontWeight: 700,
+            color: "#ff4fa3",
+            border: "2px solid #ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
               Отмена
             </Button>
 
@@ -496,32 +689,15 @@ export default function AdminRecords() {
               variant="contained"
               onClick={createRecord}
               sx={{
-              
-              flex: 1,
-
-              py: 1.5,
               borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
-              color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
+              px: 3,
+              fontWeight: 700,
+              color: "#ff4fa3",
+              border: "2px solid #ff4fa3",
+              background: "#fff",
               "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
+                background: "#ff4fa3",
+                color: "#fff",
               },
             }}
             >
@@ -535,6 +711,18 @@ export default function AdminRecords() {
           open={editOpen}
           onClose={() => setEditOpen(false)}
           fullWidth
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+          sx: {
+            borderRadius: "22px",
+            p: 2,
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(18px)",
+            border: "1px solid rgba(255,79,163,0.15)",
+            boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+          },
+        }}
         >
           <DialogTitle sx={{ fontWeight: 800, color: "#2b1d26" }}>
             Редактировать запись
@@ -550,34 +738,18 @@ export default function AdminRecords() {
 
           <DialogActions>
             <Button onClick={() => setEditOpen(false)} sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
               Отмена
             </Button>
 
@@ -585,31 +757,164 @@ export default function AdminRecords() {
               variant="contained"
               onClick={handleSave}
               sx={{
-              mt: 1,
-              flex: 1,
-              py: 1.5,
-              borderRadius: "14px",
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              transition: "0.25s ease",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-              "&:active": {
-                transform: "scale(0.98)",
-              },}}>
+            },
+          }}>
               Сохранить
             </Button>
           </DialogActions>
         </Dialog>
       </Paper>
     </Box>
+
+<Dialog
+  open={paymentOpen}
+  onClose={() => setPaymentOpen(false)}
+  fullWidth
+>
+
+  <DialogTitle>
+    Оплата клиента
+  </DialogTitle>
+
+  <DialogContent>
+
+    <TextField
+      fullWidth
+      margin="dense"
+      label="Полная сумма"
+      type="number"
+      value={paymentForm.summa}
+      onChange={(e) =>
+        setPaymentForm({
+          ...paymentForm,
+          summa: e.target.value,
+        })
+      }
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.7)",
+        },
+      }}
+    />
+
+    <TextField
+      fullWidth
+      margin="dense"
+      label="Оплачено деньгами"
+      type="number"
+      value={paymentForm.summa_fact}
+      onChange={(e) =>
+        setPaymentForm({
+          ...paymentForm,
+          summa_fact: e.target.value,
+        })
+      }
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.7)",
+        },
+      }}
+    />
+
+    <TextField
+      fullWidth
+      margin="dense"
+      label="Оплачено бонусами"
+      type="number"
+      value={paymentForm.summa_bonus}
+      onChange={(e) =>
+        setPaymentForm({
+          ...paymentForm,
+          summa_bonus: e.target.value,
+        })
+      }
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.7)",
+        },
+      }}
+    />
+
+    <FormControl fullWidth margin="dense">
+
+      <InputLabel>
+        Тип оплаты
+      </InputLabel>
+
+      <Select
+  value={paymentForm.tip_oplaty}
+  onChange={(e) =>
+    setPaymentForm({
+      ...paymentForm,
+      tip_oplaty: e.target.value,
+    })
+  }
+>
+  {tipOptions.map((t) => (
+    <MenuItem key={t.value} value={t.value}>
+      {t.label}
+    </MenuItem>
+  ))}
+</Select>
+    </FormControl>
+  </DialogContent>
+  <DialogActions>
+    <Button
+      onClick={() => setPaymentOpen(false)}
+      sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+    >
+      
+      Отмена
+    </Button>
+
+    <Button
+      variant="contained"
+      onClick={handlePayment}
+      sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
+    >
+      Сохранить
+    </Button>
+
+  </DialogActions>
+
+</Dialog> </>
   );
   
 }

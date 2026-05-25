@@ -43,9 +43,8 @@ body {
     align-items: center;
 
     min-height: 100vh;
-
-    padding: 80px 40px;
-
+    padding: 60px 20px;
+    font-family: "Inter", sans-serif;
     box-sizing: border-box;
 
     position: relative;

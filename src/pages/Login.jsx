@@ -121,111 +121,98 @@ export default function Login() {
           fullWidth
           sx={{
             mt: 2,
-
             py: 1.5,
             borderRadius: "14px",
-
-            fontWeight: 700,
             fontSize: "16px",
-
-            textTransform: "none",
-
-            background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-            boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-            transition: "0.25s ease",
-
+            fontWeight: "bold",
+            borderRadius: "14px",
+            color: "#ff4fa3",
+            border: "2px solid #ff4fa3",
+            background: "#fff0f7",
+            borderColor: "#e63e90",
+            boxShadow:
+            "0 10px 25px rgba(255,79,163,0.25)",
             "&:hover": {
-              background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-              transform: "translateY(-2px)",
-              boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-            },
-
-            "&:active": {
-              transform: "scale(0.98)",
-            },
-          }}
+            borderColor: "#e63e90",
+            color: "white",
+            background: "#ff4fa3",
+            boxShadow:
+            "0 10px 25px rgba(255,79,163,0.25)",
+            }}}
         >
           Войти
         </Button>
       </form>
 
       <Typography align="center" mt={3} sx={{ color: "#6e5a66" }}>
+  <Box
+  sx={{
+    mt: 2,
+    display: "flex",
+    gap: 2,          // расстояние между кнопками
+    width: "100%",
+  }}
+>
   <Button
     variant="text"
     onClick={() => setShowForgot(true)}
     sx={{
-              mt: 1,
-              ml: 1,
+      flex: 1,
 
-              flex: 1,
+      py: 1.3,
+      fontSize: "16px",
+      fontWeight: 700,
+      borderRadius: "14px",
 
-              py: 1.3,
-              borderRadius: "14px",
+      border: "2px solid #ff4fa3",
+      color: "#ff4fa3",
+      background: "#fff0f7",
 
-              fontWeight: 700,
-              fontSize: "15px",
-              textTransform: "none",
+      boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
 
-              color: "#fff",
+      textTransform: "none",
 
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+      "&:hover": {
+        borderColor: "#e63e90",
+        color: "white",
+        background: "#ff4fa3",
+        boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+      },
+    }}
   >
     Забыли пароль?
   </Button>
-          <Button
-          onClick={() => setShowRegister(true)}
-            variant="contained"
-            sx={{
-              mt: 1,
-              ml: 1,
 
-              flex: 1,
+  <Button
+    onClick={() => setShowRegister(true)}
+    variant="contained"
+    sx={{
+      flex: 1,
 
-              py: 1.3,
-              borderRadius: "14px",
+      py: 1.3,
+      fontSize: "16px",
+      fontWeight: 700,
+      borderRadius: "14px",
 
-              fontWeight: 700,
-              fontSize: "15px",
-              textTransform: "none",
+      border: "2px solid #ff4fa3",
+      color: "#ff4fa3",
+      background: "#fff0f7",
 
-              color: "#fff",
+      boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
 
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
+      textTransform: "none",
 
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
-          >
-            Зарегистрироваться
-          </Button>
+      "&:hover": {
+        borderColor: "#e63e90",
+        color: "white",
+        background: "#ff4fa3",
+        boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
+      },
+    }}
+  >
+    Зарегистрироваться
+  </Button>
+</Box>
       </Typography>
 
       <Modal open={showForgot} onClose={() => setShowForgot(false)}>
@@ -404,29 +391,23 @@ function RegisterForm({ onClose }) {
             mt: 1,
 
             py: 1.5,
-            borderRadius: "14px",
-
-            fontWeight: 700,
             fontSize: "16px",
-
-            textTransform: "none",
-
-            background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-            boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-            transition: "0.25s ease",
-
-            "&:hover": {
-              background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-              transform: "translateY(-2px)",
-              boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-            },
-
-            "&:active": {
-              transform: "scale(0.98)",
-            },
-          }}
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                border: "2px solid #ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
         >
           Зарегистрироваться
         </Button>
@@ -440,30 +421,23 @@ function RegisterForm({ onClose }) {
               flex: 1,
 
               py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
               fontSize: "16px",
-              textTransform: "none",
-
-              color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                borderColor: "#e63e90",
+                border: "2px solid #ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }
+              }}
         >
           Закрыть
         </Button>
@@ -503,34 +477,24 @@ function ForgotPasswordForm({ onClose }) {
           variant="contained"
           fullWidth
           sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.3,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "15px",
-              textTransform: "none",
-
-              color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+                mt:2,
+                py: 1.7,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                border: "2px solid #ff4fa3",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }}}
         >
           Получить код
         </Button>
@@ -540,34 +504,24 @@ function ForgotPasswordForm({ onClose }) {
           variant="outlined"
           fullWidth
           sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.3,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "15px",
-              textTransform: "none",
-
-              color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+                mt:1,
+                py: 1.7,
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "14px",
+                color: "#ff4fa3",
+                background: "#fff0f7",
+                border: "2px solid #ff4fa3",
+                borderColor: "#e63e90",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+                "&:hover": {
+                borderColor: "#e63e90",
+                color: "white",
+                background: "#ff4fa3",
+                boxShadow:
+                "0 10px 25px rgba(255,79,163,0.25)",
+              }}}
         >
           Закрыть
         </Button>

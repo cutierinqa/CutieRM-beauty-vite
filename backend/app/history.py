@@ -15,7 +15,7 @@ def get_db():
         db.close()
 
 @router.get("/me")
-def get_history(
+def get_my_history(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -43,16 +43,22 @@ def get_history(
         )
 
         item = {
-            "id_zapisi": r.id_zapisi,
-            "data": str(r.data),
-            "vremya": str(r.vremya),
+    "id_zapisi": r.id_zapisi,
+    "data": str(r.data),
+    "vremya": str(r.vremya),
 
-            "master": r.master.fio if r.master else "",
-            "usluga": r.usluga.nazvanie if r.usluga else "",
-        }
+    "master": r.master.fio if r.master else "",
 
-        print("NOW:", now)
-        print("RECORD:", record_datetime)
+    "usluga": (
+        r.usluga.nazvanie
+        if r.usluga else ""
+    ),
+
+    "extra_uslugi": [
+        u.id_uslugi
+        for u in r.dop_uslugi
+    ]
+}
 
         if record_datetime < now:
             past.append(item)
@@ -63,3 +69,4 @@ def get_history(
         "past": past,
         "upcoming": upcoming
     }
+
