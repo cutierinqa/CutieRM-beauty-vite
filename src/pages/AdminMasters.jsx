@@ -473,28 +473,20 @@ export default function AdminMasters() {
             sx={{
               mt: 1,
               flex: 1,
-
               py: 1.5,
               borderRadius: "14px",
-
               fontWeight: 350,
               fontSize: "16px",
               textTransform: "none",
-
               color: "#fff",
-
               background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
               boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
               transition: "0.25s ease",
-
               "&:hover": {
                 background: "linear-gradient(135deg, #e63e90, #ff70b3)",
                 transform: "translateY(-2px)",
                 boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
               },
-
               "&:active": {
                 transform: "scale(0.98)",
               },

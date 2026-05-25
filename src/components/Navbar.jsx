@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ThemeToggle from "../components/ThemeToggle";
 import "../styles/Navbar.css";
 
 const Navbar = () => {
@@ -35,14 +36,9 @@ console.log("ROLE:", role);
                   ? "/admin"
                   : role === "master"
                   ? "/masterlk"
-                  : "/Lk"
-              }
-            >
+                  : "/Lk"} >
               Кабинет
-            </Link>
-          </li>
-        )}
-
+            </Link></li>)}
         {isLoggedIn ? (
           <li>
             <a onClick={handleLogout}>Выйти</a>
@@ -50,9 +46,8 @@ console.log("ROLE:", role);
         ) : (
           <li><Link to="/login">Вход</Link></li>
         )}
-      </ul>
-    </nav>
-  );
-};
-
+         <li>
+        </li></ul>  <div className="theme-toggle">
+      <ThemeToggle />
+    </div></nav>);};
 export default Navbar;

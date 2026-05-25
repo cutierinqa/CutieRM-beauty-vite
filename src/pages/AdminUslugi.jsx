@@ -23,10 +23,10 @@ export default function AdminUslugi() {
   const token = localStorage.getItem("token");
 
   const emptyForm = {
-    nazvanie: "",
-    opisanie: "",
-    cena: "",
-  };
+  nazvanie: "",
+  opisanie: "",
+  bazovaya_cena: "",
+};
 
   const [uslugi, setUslugi] = useState([]);
 
@@ -156,13 +156,12 @@ export default function AdminUslugi() {
         fullWidth
         margin="dense"
         label="Цена"
-        type="number"
-        value={data.cena || ""}
+        value={data.bazovaya_cena || ""}
         onChange={(e) =>
-          setData({
+        setData({
             ...data,
-            cena: e.target.value,
-          })
+            bazovaya_cena: e.target.value,
+        })
         }
       />
     </>
@@ -225,21 +224,20 @@ export default function AdminUslugi() {
           variant="contained"
           onClick={() => setAddOpen(true)}
           sx={{
-              px: 3,
-              py: 1.2,
-              borderRadius: "14px",
-              fontWeight: 700,
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-              },
-            }}
+            },
+          }}
         >
-          Добавить мастера
+          Добавить услугу
         </Button>
       </Stack>
 
@@ -288,7 +286,7 @@ export default function AdminUslugi() {
                   align="center"
                   sx={{ color: "black", borderColor: "#444" }}
                 >
-                  {u.nazvanie_uslugi}
+                  {u.nazvanie}
                 </TableCell>
 
                 <TableCell
@@ -302,7 +300,7 @@ export default function AdminUslugi() {
                   align="center"
                   sx={{ color: "black", borderColor: "#444" }}
                 >
-                  {u.cena}
+                  {u.bazovaya_cena}
                 </TableCell>
 
 
@@ -318,17 +316,20 @@ export default function AdminUslugi() {
                       <Button
                         size="small"
                         variant="contained"
-                        onClick={() => handleEdit(m)}
+                        onClick={() => handleEdit(u)}
                         sx={{
-                          background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-                          fontWeight: 600,
-                          textTransform: "none",
-                          borderRadius: "10px",
-
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                          },
-                        }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
                     >
                       Редактировать
                     </Button>
@@ -337,17 +338,20 @@ export default function AdminUslugi() {
                       size="small"
                       variant="contained"
                       color="error"
-                      onClick={() => deleteMaster(m.id_mastera)}
+                      onClick={() => deleteUslugu(u.id_uslugi)}
                       sx={{
-                          background: "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
-                          fontWeight: 600,
-                          textTransform: "none",
-                          borderRadius: "10px",
-
-                          "&:hover": {
-                            transform: "translateY(-2px)",
-                          },
-                        }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
                     >
                       Удалить
                     </Button>
@@ -384,69 +388,37 @@ export default function AdminUslugi() {
 
         <DialogActions>
           <Button onClick={() => setAddOpen(false)}sx={{
-            
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
             Отмена
           </Button>
 
           <Button
             variant="contained"
-            onClick={createUslugu}
+            onClick={createUsluga}
             sx={{
-              
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+            },
+          }}
             >
             Добавить
           </Button>
@@ -458,46 +430,40 @@ export default function AdminUslugi() {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         fullWidth
+        maxWidth="sm"
+        PaperProps={{
+        sx: {
+            borderRadius: "22px",
+            p: 2,
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(18px)",
+            border: "1px solid rgba(255,79,163,0.15)",
+            boxShadow: "0 20px 50px rgba(255,79,163,0.2)",
+        },
+        }}
       >
         <DialogTitle>
           Редактировать услугу
         </DialogTitle>
 
         <DialogContent>
-          {currentUsluga &&
-            renderFields(currentUsluga, setCurrentUsluga)}
+          {currentUsluga && renderFields(currentUsluga, setCurrentUsluga)}
         </DialogContent>
 
         <DialogActions>
           <Button onClick={() => setEditOpen(false)} sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
             Отмена
           </Button>
 
@@ -505,34 +471,18 @@ export default function AdminUslugi() {
             variant="contained"
             onClick={handleSave}
             sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+            },
+          }}
           >
             Сохранить
           </Button>
