@@ -200,7 +200,9 @@ class Otzyv(Base):
     )
     klient = relationship("Klient")
     master = relationship("Master")
+    usluga = relationship("Usluga")
     zapis = relationship("Zapisi")
+    
   # ===========ИНЦИДЕНТЫ==========
 class Incidenty(Base):
     __tablename__ = "incidenty"
@@ -221,6 +223,9 @@ class Incidenty(Base):
     opisanie = Column(Text)
     data = Column(DateTime, default=datetime.utcnow)
     status = Column(String, default="новый")
+    klient = relationship("Klient")
+    master = relationship("Master")
+    usluga = relationship("Usluga")
 
 class Platyzhi(Base):
     __tablename__ = "platyzhi"

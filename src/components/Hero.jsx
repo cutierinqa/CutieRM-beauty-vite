@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/Hero.css";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import ParticlesBg from "./ParticlesBg";
 
 const Hero = () => {
   const words = ["ЯРКОЙ", "СТИЛЬНОЙ", "НЕПОВТОРИМОЙ"];
@@ -28,25 +29,29 @@ const Hero = () => {
   }, [charIndex, wordIndex, words]);
 
   return (
-    
-    <><> <Helmet>
-      <title>NOVA</title>
-    </Helmet></>
-    <div className="hero2">
-        <h1>NOVA</h1>
-        <p>New, Organized, Visits, Appointments</p>
-        <Link to="/zapis">
-  <button className="btn-book">
-    Записаться
-  </button>
-</Link>
-      </div>
-    <div className="hero">
-        <span className="static">БУДЬ</span>
-        <div className="container">
-          <span className="dynamic">{displayedText}</span>
+    <>
+      <Helmet>
+        <title>NOVA</title>
+      </Helmet>
+      <div className="hero-wrapper">
+        <ParticlesBg />
+        <div className="hero2">
+          <h1>NOVA</h1>
+          <p>New, Organized, Visits, Appointments</p>
+          <Link to="/zapis">
+            <button className="btn-book">
+              Записаться
+            </button>
+          </Link>
         </div>
-      </div></>
+        <div className="hero">
+          <span className="static">БУДЬ</span>
+          <div className="container">
+            <span className="dynamic">{displayedText}</span>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

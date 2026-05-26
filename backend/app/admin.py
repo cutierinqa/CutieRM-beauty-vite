@@ -1305,16 +1305,40 @@ def delete_shift(
 @admin_router.get("/incidents")
 def get_incidents(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
 
-    if current_user.id_role != 1:
-        raise HTTPException(status_code=403)
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
 
-    return db.query(Incidenty).all()
+    incidents = db.query(Incidenty).all()
+
+    result = []
+
+    for i in incidents:
+        result.append({
+            "id_incidenta": i.id_incidenta,
+            "tip_incidenta": i.tip_incidenta,
+            "opisanie": i.opisanie,
+            "data": i.data,
+            "status": i.status,
+
+            # CRM enrich
+            "klient_fio": i.id_klienta,
+            "master_fio": i.id_mastera,
+            "usluga": i.id_uslugi
+        })
+
+    return result
 
 @admin_router.put("/incidents/{id}")
 def update_incident_status(id: int, status: str, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
 
-    if current_user.id_role != 1:
-        raise HTTPException(status_code=403)
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
 
     incident = db.query(Incidenty).filter(Incidenty.id_incidenta == id).first()
 
@@ -1329,7 +1353,30 @@ def update_incident_status(id: int, status: str, db: Session = Depends(get_db), 
 @admin_router.get("/reviews")
 def get_reviews(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
 
-    if current_user.id_role != 1:
-        raise HTTPException(status_code=403)
+    if current_user.id_role != 3:
+        raise HTTPException(status_code=403, detail="Нет доступа")
 
-    return db.query(Otzyv).all()
+    reviews = (
+        db.query(Otzyv)
+        .join(Otzyv.zapis)
+        .join(Zapisi.usluga)
+        .join(Zapisi.master)
+        .join(Zapisi.klient)
+        .all()
+    )
+
+    result = []
+
+    for r in reviews:
+        result.append({
+            "id_otzyva": r.id_otzyva,
+            "ocenka": r.ocenka,
+            "tekst_otzyva": r.tekst_otzyva,
+            "data_otzyva": r.data_otzyva,
+
+            "klient": r.zapis.klient.fio if r.zapis and r.zapis.klient else None,
+            "master": r.zapis.master.fio if r.zapis and r.zapis.master else None,
+            "usluga": r.zapis.usluga.nazvanie if r.zapis and r.zapis.usluga else None,
+        })
+
+    return result
