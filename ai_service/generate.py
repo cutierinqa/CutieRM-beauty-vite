@@ -10,22 +10,6 @@ pipe = StableDiffusionPipeline.from_pretrained(
 
 pipe = pipe.to("cuda")
 
-prompt = """
-beautiful realistic manicure,
-pink nude nails,
-luxury nail design,
-salon quality,
-professional manicure,
-high detail,
-soft lighting
-"""
-
-image = pipe(
-    prompt,
-    num_inference_steps=20,
-    guidance_scale=7.5
-).images[0]
-
-image.save("result.png")
-
-print("ГОТОВО")
+def generate_nail_design(prompt: str):
+    image = pipe(prompt, num_inference_steps=25).images[0]
+    return image
