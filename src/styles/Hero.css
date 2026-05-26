@@ -1,47 +1,13 @@
 /* ===== HERO SECTION ===== */
-.hero-wrapper {
+
+.hero,
+.hero2 {
+  text-align: center;
+  padding: 60px 20px;
+  font-family: "Inter", sans-serif;
   position: relative;
   overflow: hidden;
-  min-height: 100vh;
 }
-
-/* мягкие цветовые пятна */
-.hero-wrapper::before,
-.hero-wrapper::after {
-  content: "";
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #ff4fa3, transparent 70%);
-  filter: blur(80px);
-  opacity: 0.25;
-  z-index: 0;
-}
-
-.hero-wrapper::before {
-  top: -100px;
-  left: -100px;
-}
-
-.hero-wrapper::after {
-  bottom: -120px;
-  right: -120px;
-}
-
-/* стеклянные карточки */
-.hero2 {
-  position: relative;
-  z-index: 2;
-
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(18px);
-
-  border-radius: 30px;
-  padding: 40px;
-
-  box-shadow: 0 20px 60px rgba(255,79,163,0.15);
-}
-
 
 /* ===== DECORATIVE BACKGROUND ===== */
 
@@ -80,7 +46,6 @@
   line-height: 1.8;
   color: var(--nav-text);
 }
-
 
 /* ===== HERO BUTTON ===== */
 

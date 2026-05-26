@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# venv
+venv/
+ai_service/venv/
+
+# heavy ML files
+*.dll
+*.pt
+*.bin
+*.safetensors
+
+# torch cache

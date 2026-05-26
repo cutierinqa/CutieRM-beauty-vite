@@ -344,13 +344,18 @@ export default function Contacts() {
               onClick={handleCreateRecord}
               sx={{
                 py: 1.7,
-                fontSize: "16px",
-                fontWeight: "bold",
-                borderRadius: "20px",
-                color: "var(--text-main)",
-                background: "var(--btn-bg)",
-                borderColor: "var(--border-hover)",
-              }}
+                borderRadius: "16px",
+                fontWeight: 700,
+                fontSize: "20px",
+                textTransform: "none",
+                border: "2px solid #ff4fa3",
+                color: "#ff4fa3",
+                background: "#fff",
+                "&:hover": {
+                background: "#ff4fa3",
+                color: "#fff",
+                },
+            }}
             >
               Записаться
             </Button>

@@ -95,6 +95,7 @@ class Usluga(Base):
     dlitelnost = Column(Integer, nullable=True)
     bazovaya_cena = Column(Float, nullable=True)
     is_main = Column(Integer, default=1)
+    otzyvy = relationship("Otzyv", back_populates="usluga")
 
     zapisi = relationship("Zapisi", back_populates="usluga")
     kategoria = relationship("KategoriiUslug", back_populates="uslugi")
@@ -192,6 +193,7 @@ class Otzyv(Base):
     id_zapisi = Column(
         Integer,
         ForeignKey("zapisi.id_zapisi"))
+    id_uslugi = Column(Integer, ForeignKey("uslugi.id_uslugi"))
     ocenka = Column(Integer)
     tekst_otzyva = Column(Text)
     data_otzyva = Column(
