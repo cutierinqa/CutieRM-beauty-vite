@@ -1,11 +1,14 @@
+from doctest import master
+from unittest import result
+from sqlalchemy import text
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import Column, Enum, and_
 from jose import jwt, JWTError
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime
 from app.database import SessionLocal
-from app.models import User, Master, Zapisi, Shifts
+from app.models import User, Master, Zapisi, Shift
 from app.config import SECRET_KEY, ALGORITHM
 from datetime import date
 
@@ -307,6 +310,7 @@ def get_history_records(
 
 @master_router.get("/shifts")
 def get_master_shifts(
+    
     date: str,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -324,12 +328,16 @@ def get_master_shifts(
         "%Y-%m-%d"
     ).date()
 
-    shifts = db.query(Shifts).filter(
-    Shifts.id_mastera == master.id_mastera,
-    Shifts.data_smeny == selected_date
-).order_by(Shifts.vremya_nachala).all()
+    shift = db.query(Shift).filter(
+    Shift.id_mastera == master.id_mastera,
+    Shift.data_smeny == selected_date
+).order_by(Shift.vremya_nachala).all()
+    print("SELECTED DATE:", selected_date)
+    print("SHIFTS:", shift)
 
-    return shifts
+    return shift
+    
+
 
 
 @master_router.delete("/shifts/{id_shift}")
@@ -345,9 +353,9 @@ def delete_shift(
     if not master:
         raise HTTPException(status_code=404)
 
-    shift = db.query(Shifts).filter(
-        Shifts.id_shift == id_shift,
-        Shifts.id_mastera == master.id_mastera
+    shift = db.query(Shift).filter(
+        Shift.id_shift == id_shift,
+        Shift.id_mastera == master.id_mastera
     ).first()
 
     if not shift:
@@ -359,7 +367,6 @@ def delete_shift(
     return {
         "message": "Удалено"
     }
-
 @master_router.post("/shifts")
 def create_shift(
     data: dict,
@@ -367,50 +374,93 @@ def create_shift(
     db: Session = Depends(get_db)
 ):
 
+    if current_user.id_role != 2:
+        raise HTTPException(status_code=403)
+
     master = db.query(Master).filter(
         Master.id_user == current_user.id_user
     ).first()
+
     if not master:
         raise HTTPException(status_code=404)
 
     try:
-        selected_date = datetime.strptime(
-            data["date"],
-            "%Y-%m-%d"
-        ).date()
+        selected_date = datetime.strptime(data["data_smeny"], "%Y-%m-%d").date()
+        start_time = datetime.strptime(data["vremya_nachala"], "%H:%M").time()
+        end_time = datetime.strptime(data["vremya_okonchaniya"], "%H:%M").time()
 
-        start_time = datetime.strptime(
-            data["start_time"],
-            "%H:%M"
-        ).time()
+        shift = Shift(
+            id_mastera=master.id_mastera,
+            data_smeny=selected_date,
+            vremya_nachala=start_time,
+            vremya_okonchaniya=end_time,
+            tip_smeny=data["tip_smeny"],
+            kommentarii=data["kommentarii"]
+        )
 
-        end_time = datetime.strptime(
-            data["end_time"],
-            "%H:%M"
-        ).time()
-    except:
-        raise HTTPException(status_code=400, detail="Invalid date or time format")
+        db.add(shift)
+        db.commit()
+        db.refresh(shift)
 
-    if start_time >= end_time:
-        raise HTTPException(status_code=400, detail="Start time must be before end time")
+        # 🔥 DEBUG
+        result = db.execute(text("SELECT COUNT(*) FROM shifts")).fetchone()
+        print("SHIFT COUNT:", result)
 
-    new_shift = Shifts(
-        id_mastera=master.id_mastera,
-        data_smeny=selected_date,
-        vremya_nachala=start_time,
-        vremya_konca=end_time
-    )
-
-    db.add(new_shift)
-    db.commit()
-    db.refresh(new_shift)
-
-    return {
-        "message": "Смена добавлена",
-        "shift": {
-            "id_shift": new_shift.id_shift,
-            "data_smeny": str(new_shift.data_smeny),
-            "vremya_nachala": str(new_shift.vremya_nachala)[:5],
-            "vremya_konca": str(new_shift.vremya_konca)[:5]
+        return {
+            "id_shift": shift.id_shift,
+            "data_smeny": str(shift.data_smeny),
+            "vremya_nachala": str(shift.vremya_nachala),
+            "vremya_okonchaniya": str(shift.vremya_okonchaniya),
+            "tip_smeny": shift.tip_smeny,
+            "kommentarii": shift.kommentarii
         }
-    }
+
+    except Exception as e:
+        db.rollback()
+        print("🔥 SHIFT ERROR:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@master_router.get("/shifts/month")
+def get_month_shifts(
+    month: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+
+    master = db.query(Master).filter(
+        Master.id_user == current_user.id_user
+    ).first()
+
+    if not master:
+        raise HTTPException(status_code=404)
+
+    year, month_num = month.split("-")
+
+    shifts = db.query(Shift).filter(
+        Shift.id_mastera == master.id_mastera
+    ).all()
+
+    result = []
+
+    for shift in shifts:
+
+        if (
+            shift.data_smeny.year == int(year)
+            and
+            shift.data_smeny.month == int(month_num)
+        ):
+
+            result.append(
+                str(shift.data_smeny)
+            )
+
+    return result
+
+@master_router.get("/debug/my-shifts")
+def debug_my_shifts(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
+    master = db.query(Master).filter(Master.id_user == current_user.id_user).first()
+
+    return db.query(Shift).filter(
+        Shift.id_mastera == master.id_mastera
+    ).all()

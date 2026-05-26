@@ -168,7 +168,12 @@ class Shift(Base):
     data_smeny = Column(Date)
     vremya_nachala = Column(Time)
     vremya_okonchaniya = Column(Time)
-    tip_smeny = Column(String(50))
+    tip_smeny = Column(Enum(
+    "morning",
+    "day",
+    "evening",
+    name="tip_smeny_enum"
+))
     kommentarii = Column(Text)
     master = relationship(
         "Master",

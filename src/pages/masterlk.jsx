@@ -229,24 +229,18 @@ const loadHistoryRecords = async () => {
             onClick={loadCurrentRecords}
             sx={{
               py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 700,
-
-              textTransform: "none",
-
-              background:
-                "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow:
-                "0 10px 25px rgba(255,79,163,0.25)",
-
-              "&:hover": {
-                borderColor: "#e63e90",
-                color: "#ff4fa3",
-                background: "#fff0f7"
-              }
-            }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
           >
             Актуальные записи
           </Button>
@@ -256,25 +250,19 @@ const loadHistoryRecords = async () => {
             variant="contained"
             onClick={() => navigate("/master/schedule")}
             sx={{
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 700,
-
-              textTransform: "none",
-
-              background:
-                "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow:
-                "0 10px 25px rgba(255,79,163,0.25)",
-
-              "&:hover": {
-                borderColor: "#e63e90",
-                color: "#ff4fa3",
-                background: "#fff0f7"
-              }
-            }}
+            py: 1.5,
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
           >
             Расписание
           </Button>
@@ -285,24 +273,18 @@ const loadHistoryRecords = async () => {
             onClick={loadHistoryRecords}
             sx={{
               py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 700,
-
-              textTransform: "none",
-
-              background:
-                "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow:
-                "0 10px 25px rgba(255,79,163,0.25)",
-
-              "&:hover": {
-                borderColor: "#e63e90",
-                color: "#ff4fa3",
-                background: "#fff0f7"
-              }
-            }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
           >
             История записей
           </Button>
@@ -311,26 +293,20 @@ const loadHistoryRecords = async () => {
             variant="outlined"
             onClick={() => navigate("/")}
             sx={{
-              mt: 2,
-
+              mt:2,
               py: 1.5,
-
-              borderRadius: "14px",
-
-              fontWeight: 700,
-
-              textTransform: "none",
-
-              borderColor: "#ff4fa3",
-
-              color: "white",
-
-              "&:hover": {
-                borderColor: "#e63e90",
-                color: "#ff4fa3",
-                background: "#fff0f7"
-              }
-            }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
           >
             На главную
           </Button>

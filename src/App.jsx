@@ -19,6 +19,7 @@ import AdminMasters from "./pages/AdminMasters";
 import AdminClients from "./pages/AdminClients";
 import AdminZapisi from "./pages/AdminZapisi";
 import AdminUsers from "./pages/AdminUsers";
+import AdminSchedule from "./pages/AdminSchedule";
 import Admin from "./pages/admin";
 import Lk from "./pages/Lk";
 import MasterLk from "./pages/masterlk";
@@ -78,6 +79,7 @@ function App() {
         <Route path="/admin/zapisi" element={<AdminZapisi />} />
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/uslugi" element={<AdminUslugi />} />
+        <Route path="/admin/schedule" element={<AdminSchedule />} />
         <Route path="/master/schedule" element={<MasterSchedule />} />
       </Routes>
     </>
