@@ -25,6 +25,7 @@ import Lk from "./pages/Lk";
 import MasterLk from "./pages/masterlk";
 import Settings from "./pages/Settings";
 import MasterSchedule from "./pages/MasterSchedule";
+import Moderation from "./pages/AdminModeration";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -80,6 +81,7 @@ function App() {
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/uslugi" element={<AdminUslugi />} />
         <Route path="/admin/schedule" element={<AdminSchedule />} />
+        <Route path="/admin/moderation" element={<Moderation />} />
         <Route path="/master/schedule" element={<MasterSchedule />} />
       </Routes>
     </>

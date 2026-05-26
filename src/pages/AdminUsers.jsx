@@ -42,6 +42,7 @@ export default function AdminUsers() {
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [search, setSearch] = useState("");
 
   // =========================
   // LOAD USERS + ROLES
@@ -53,7 +54,7 @@ export default function AdminUsers() {
 
     setUsers(res.data || []);
   };
-
+  
   const loadRoles = async () => {
   const token = localStorage.getItem("token");
 
@@ -244,24 +245,35 @@ export default function AdminUsers() {
           >
             Управление пользователями
           </Typography>
+          <TextField
+  placeholder="Поиск по ФИО"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  sx={{
+    width: 300,
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "14px",
+      background: "white"
+    }
+  }}
+/>
 
           <Button
             variant="contained"
             onClick={() => setAddOpen(true)}
             sx={{
-              px: 3,
-              py: 1.2,
-              borderRadius: "14px",
-              fontWeight: 700,
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-              },
-            }}
+            },
+          }}
           >
             Добавить пользователя
           </Button>
@@ -309,7 +321,11 @@ export default function AdminUsers() {
     </TableHead>
 
     <TableBody>
-      {users.map((u) => (
+      {users
+  .filter((u) =>
+    u.fio?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((u) => (
         <TableRow key={u.id_user}>
           <TableCell>{u.fio}</TableCell>
 
@@ -341,17 +357,18 @@ export default function AdminUsers() {
                   variant="contained"
                   onClick={() => handleEdit(u)}
                   sx={{
-                    background:
-                      "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-                    fontWeight: 600,
-                    textTransform: "none",
-                    borderRadius: "10px",
-
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                    },
-                  }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
                 >
                   Редактировать
                 </Button>
@@ -361,17 +378,18 @@ export default function AdminUsers() {
                   variant="contained"
                   onClick={() => deleteUser(u.id_user)}
                   sx={{
-                    background:
-                      "linear-gradient(135deg, #ff6b8b, #ff3d6e)",
-
-                    fontWeight: 600,
-                    textTransform: "none",
-                    borderRadius: "10px",
-
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                    },
-                  }}
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
+              color: "#fff",
+            },
+          }}
                 >
                   Удалить
                 </Button>
@@ -411,35 +429,19 @@ export default function AdminUsers() {
 
           <DialogActions>
             <Button onClick={() => setAddOpen(false)}
-                sx={{
-            
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+               sx={{
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
               Отмена
             </Button>
 
@@ -447,34 +449,18 @@ export default function AdminUsers() {
               onClick={createUser}
               variant="contained"
               sx={{
-              
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}
+            },
+          }}
             >
               Создать
             </Button>
@@ -501,34 +487,18 @@ export default function AdminUsers() {
 
           <DialogActions>
             <Button onClick={() => setEditOpen(false)}sx={{
-              mt: 1,
-              flex: 1,
-
-              py: 1.5,
-              borderRadius: "14px",
-
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
-
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-
-              transition: "0.25s ease",
-
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-
-              "&:active": {
-                transform: "scale(0.98)",
-              },
-            }}>
+            },
+          }}>
               Отмена
             </Button>
 
@@ -536,25 +506,18 @@ export default function AdminUsers() {
               onClick={handleSave}
               variant="contained"
               sx={{
-              mt: 1,
-              flex: 1,
-              py: 1.5,
-              borderRadius: "14px",
-              fontWeight: 350,
-              fontSize: "16px",
-              textTransform: "none",
+            borderRadius: "16px",
+            fontWeight: 700,
+            fontSize: "13px",
+            textTransform: "none",
+            border: "2px solid #ff4fa3",
+            color: "#ff4fa3",
+            background: "#fff",
+            "&:hover": {
+              background: "#ff4fa3",
               color: "#fff",
-              background: "linear-gradient(135deg, #ff4fa3, #ff8ec6)",
-              boxShadow: "0 10px 25px rgba(255,79,163,0.25)",
-              transition: "0.25s ease",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e63e90, #ff70b3)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 16px 35px rgba(255,79,163,0.35)",
-              },
-              "&:active": {
-                transform: "scale(0.98)",
-              },}}>
+            },
+          }}>
               Сохранить
             </Button>
           </DialogActions>

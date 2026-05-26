@@ -195,6 +195,13 @@ export default function AdminSchedule() {
                 InputLabelProps={{ shrink: true }}
                 value={form.vremya_nachala}
                 onChange={(e) => setForm({ ...form, vremya_nachala: e.target.value })}
+                sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "16px",
+
+                  background: "white"
+                }
+              }}
               />
 
               <TextField
@@ -203,6 +210,13 @@ export default function AdminSchedule() {
                 InputLabelProps={{ shrink: true }}
                 value={form.vremya_okonchaniya}
                 onChange={(e) => setForm({ ...form, vremya_okonchaniya: e.target.value })}
+                sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "16px",
+
+                  background: "white"
+                }
+              }}
               />
 
               <TextField
@@ -210,6 +224,13 @@ export default function AdminSchedule() {
                 label="Тип"
                 value={form.tip_smeny}
                 onChange={(e) => setForm({ ...form, tip_smeny: e.target.value })}
+                sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "16px",
+
+                  background: "white"
+                }
+              }}
               >
                 <MenuItem value="morning">morning</MenuItem>
                 <MenuItem value="day">day</MenuItem>
@@ -220,9 +241,30 @@ export default function AdminSchedule() {
                 label="Комментарий"
                 value={form.kommentarii}
                 onChange={(e) => setForm({ ...form, kommentarii: e.target.value })}
+                sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "16px",
+
+                  background: "white"
+                }
+              }}
               />
 
-              <Button variant="contained" onClick={createShift}>
+              <Button variant="contained" onClick={createShift}
+              sx={{
+                py: 1.5,
+                borderRadius: "16px",
+                fontWeight: 700,
+                fontSize: "13px",
+                textTransform: "none",
+                border: "2px solid #ff4fa3",
+                color: "#ff4fa3",
+                background: "#fff",
+                "&:hover": {
+                background: "#ff4fa3",
+                color: "#fff",
+                },
+            }}>
                 Добавить смену
               </Button>
 
@@ -233,10 +275,35 @@ export default function AdminSchedule() {
           <Stack spacing={2}>
 
             {shifts.map((shift) => (
-              <Card key={shift.id_shift}>
+              <Card key={shift.id_shift}
+              sx={{
+  borderRadius: "28px",
+
+  background:
+    shift.tip_smeny === "day"
+      ? "rgba(255,255,255,0.75)"
+      : "linear-gradient(135deg,#2f2f2f,#4a4a4a)",
+
+  color:
+    shift.tip_smeny === "day"
+      ? "#2b1d26"
+      : "white",
+
+  border:
+    "1px solid rgba(255,79,163,0.12)",
+
+  boxShadow:
+    "0 10px 30px rgba(255,79,163,0.10)"
+}}>
                 <CardContent>
 
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Box sx={{
+                      display: "flex",
+                      justifyContent:
+                        "space-between",
+
+                      alignItems: "center"
+                    }}>
 
                     <Box>
                       <Typography fontWeight={700}>
@@ -256,6 +323,20 @@ export default function AdminSchedule() {
                       color="error"
                       startIcon={<DeleteIcon />}
                       onClick={() => deleteShift(shift.id_shift)}
+                      sx={{
+                    py: 1.5,
+                    borderRadius: "16px",
+                    fontWeight: 700,
+                    fontSize: "13px",
+                    textTransform: "none",
+                    border: "2px solid #ff4fa3",
+                    color: "#ff4fa3",
+                    background: "#fff",
+                    "&:hover": {
+                    background: "#ff4fa3",
+                    color: "#fff",
+                    },
+                }}
                     >
                       Удалить
                     </Button>

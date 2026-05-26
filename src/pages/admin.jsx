@@ -96,6 +96,9 @@ export default function Admin() {
          case "payments":
           url = "/admin/payments";
           break;
+          case "moderation":
+          url = "/admin/moderation";
+          break;
         default:
           setLoading(false);
           return;
@@ -845,7 +848,7 @@ case "uslugi":
             Управление услугами
           </MenuItem>
 
-          <MenuItem onClick={() => navigate("/admin/sсhedule")}>
+          <MenuItem onClick={() => navigate("/admin/schedule")}>
             Управление расписанием
           </MenuItem>
 
@@ -855,6 +858,10 @@ case "uslugi":
 
           <MenuItem onClick={() => navigate("/admin/users")}>
             Управление пользователями
+          </MenuItem>
+
+          <MenuItem onClick={() => navigate("/admin/moderation")}>
+            Модерация
           </MenuItem>
         </Menu>
       </Box>

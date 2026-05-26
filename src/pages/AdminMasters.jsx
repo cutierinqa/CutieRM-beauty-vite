@@ -64,6 +64,7 @@ export default function AdminMasters() {
     });
     loadMasters();
   };
+  const [search, setSearch] = useState("");
 
   const handleEdit = (master) => {
     setCurrentMaster({ ...master });
@@ -163,6 +164,18 @@ export default function AdminMasters() {
         >
           Управление мастерами
         </Typography>
+        <TextField
+  placeholder="Поиск по ФИО"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  sx={{
+    width: 300,
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "14px",
+      background: "white"
+    }
+  }}
+/>
 
         <Button
           variant="contained"
@@ -227,7 +240,11 @@ export default function AdminMasters() {
           </TableHead>
 
           <TableBody>
-            {masters.map((m, index) => (
+            {masters
+  .filter((m) =>
+    m.fio?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((m, index) => (
               <TableRow key={index}>
                 <TableCell
                   align="center"

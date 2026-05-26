@@ -94,6 +94,7 @@ const loadRecords = async () => {
     setAddOpen(false);
     loadRecords();
   };
+  const [search, setSearch] = useState("");
 
   const deleteRecord = async (id) => {
     await axios.delete(`/admin/records/${id}`, {
@@ -360,6 +361,18 @@ const loadRecords = async () => {
           >
             Управление записями
           </Typography>
+          <TextField
+  placeholder="Поиск по ФИО клиента"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  sx={{
+    width: 300,
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "14px",
+      background: "white"
+    }
+  }}
+/>
 
           <Button
             variant="contained"
@@ -524,7 +537,11 @@ const loadRecords = async () => {
     </TableHead>
 
     <TableBody>
-      {currentList.map((r) => (
+      {currentList
+  .filter((r) =>
+    r.klient?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((r) => (
         <TableRow key={r.id_zapisi}>
           <TableCell align="center">
             {r.klient}

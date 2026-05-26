@@ -2,7 +2,7 @@ import traceback
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
-from app.models import User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi, Role, Otzyv, Incidenty, KategoriiKlientov,  Platyzhi
+from app.models import Shift, User, Klient, Master, Zapisi, Usluga, zapisi_dop_uslugi, Role, Otzyv, Incidenty, KategoriiKlientov,  Platyzhi
 from app.auth_utils import get_current_user
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
@@ -1223,3 +1223,113 @@ def get_payments(
         })
 
     return result
+
+@admin_router.post("/shifts")
+def create_shift_for_master(
+    data: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
+
+    master = db.query(Master).filter(
+        Master.id_mastera == data["id_mastera"]
+    ).first()
+
+    if not master:
+        raise HTTPException(status_code=404)
+
+    shift = Shift(
+        id_mastera=master.id_mastera,
+        data_smeny=datetime.strptime(data["data_smeny"], "%Y-%m-%d").date(),
+        vremya_nachala=datetime.strptime(data["vremya_nachala"], "%H:%M").time(),
+        vremya_okonchaniya=datetime.strptime(data["vremya_okonchaniya"], "%H:%M").time(),
+        tip_smeny=data["tip_smeny"],
+        kommentarii=data["kommentarii"]
+    )
+
+    db.add(shift)
+    db.commit()
+    db.refresh(shift)
+
+    return shift
+
+@admin_router.get("/shifts")
+def get_shifts(
+    date: str,
+    masterId: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
+
+    selected_date = datetime.strptime(date, "%Y-%m-%d").date()
+
+    return db.query(Shift).filter(
+        Shift.id_mastera == masterId,
+        Shift.data_smeny == selected_date
+    ).all()
+
+@admin_router.delete("/shifts/{id_shift}")
+def delete_shift(
+    id_shift: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if current_user.id_role != 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Нет доступа"
+        )
+
+    shift = db.query(Shift).filter(
+        Shift.id_shift == id_shift
+    ).first()
+
+    if not shift:
+        raise HTTPException(status_code=404)
+
+    db.delete(shift)
+    db.commit()
+
+    return {"message": "deleted"}
+#====================ИНЦИДЕНТЫ
+@admin_router.get("/incidents")
+def get_incidents(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+
+    if current_user.id_role != 1:
+        raise HTTPException(status_code=403)
+
+    return db.query(Incidenty).all()
+
+@admin_router.put("/incidents/{id}")
+def update_incident_status(id: int, status: str, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+
+    if current_user.id_role != 1:
+        raise HTTPException(status_code=403)
+
+    incident = db.query(Incidenty).filter(Incidenty.id_incidenta == id).first()
+
+    if not incident:
+        raise HTTPException(status_code=404)
+
+    incident.status = status
+    db.commit()
+
+    return {"message": "updated"}
+#====================отзывы
+@admin_router.get("/reviews")
+def get_reviews(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+
+    if current_user.id_role != 1:
+        raise HTTPException(status_code=403)
+
+    return db.query(Otzyv).all()

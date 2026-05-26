@@ -31,7 +31,7 @@ export default function AdminUslugi() {
   const [uslugi, setUslugi] = useState([]);
 
   const [form, setForm] = useState(emptyForm);
-
+  const [search, setSearch] = useState("");
   const [addOpen, setAddOpen] = useState(false);
 
   const [editOpen, setEditOpen] = useState(false);
@@ -219,6 +219,18 @@ export default function AdminUslugi() {
         >
           Управление услугами
         </Typography>
+        <TextField
+  placeholder="Поиск по названию услуги"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  sx={{
+    width: 300,
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "14px",
+      background: "white"
+    }
+  }}
+/>
 
         <Button
           variant="contained"
@@ -280,7 +292,11 @@ export default function AdminUslugi() {
           </TableHead>
 
           <TableBody>
-            {uslugi.map((u, index) => (
+            {uslugi
+  .filter((u) =>
+    u.nazvanie?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((u, index) => (
               <TableRow key={index}>
                 <TableCell
                   align="center"

@@ -59,6 +59,7 @@ export default function AdminClients() {
     setAddOpen(false);
     loadClients();
   };
+  const [search, setSearch] = useState("");
 
   const deleteClient = async (id) => {
     await axios.delete(`/admin/clients/${id}`, {
@@ -186,6 +187,18 @@ export default function AdminClients() {
         >
           Управление клиентами
         </Typography>
+        <TextField
+  placeholder="Поиск по ФИО"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  sx={{
+    width: 300,
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "14px",
+      background: "white"
+    }
+  }}
+/>
           <Button
             variant="contained"
             onClick={() => setAddOpen(true)}
@@ -251,7 +264,11 @@ export default function AdminClients() {
             </TableHead>
 
             <TableBody>
-              {clients.map((c) => (
+              {clients
+  .filter((c) =>
+    c.fio?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((c) => (
                 <TableRow key={c.id_klienta}>
                   <TableCell
                     align="center"
